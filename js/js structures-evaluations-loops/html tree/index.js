@@ -1,3 +1,26 @@
+// // <body>
+//         <div>
+//             <span>Enter a data please:</span><br/>
+//             <input type='text' id='name'>
+//             <input type='text' id='surname'>
+//         </div>
+//         <div>
+//             <button id='ok'>OK</button>
+//             <button id='cancel'>Cancel</button>
+//         </div>
+//     </body>
+//------------------
+// Сделайте декларативную JSON-структуру для тэгов выше, в которой:
+// каждый тэг будет объектом
+// имя тэга будет полем tagName
+// вложенные тэги будут в поле subTags
+// текст в тэге будет в поле text
+// набор аттрибутов тэга будет в поле attrs.
+//------------------
+// Выведите значения текста во второй кнопке, используя . и [].
+// Выведите значение атрибута id во втором input, используя . и [].
+//------------------
+
 let body = {
     tagName: 'body',
     attrs: {},
@@ -62,3 +85,6 @@ let body = {
         }
     ]
 }
+
+console.log(body.children[1].children[1].text)
+console.log(body.children[0].children[3].attrs.id)
