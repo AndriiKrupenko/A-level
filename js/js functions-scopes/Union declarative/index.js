@@ -2,19 +2,21 @@
 //------------------
 
 let union = prompt("Введите название задания")
+console.log(union.toLowerCase())
 let tasks = {
-    "a": aSample(),
-    "cube": cubeSample(),
-    "avg2": avg2Sample(),
-    "sum3": sum3Sample(),
-    "intRandom": intRandomSample(),
-    "greetAll": greetAllSample(),
-    "sum": sumSample()
+    a: aSample,
+    cube: cubeSample,
+    avg2: avg2Sample,
+    sum3: sum3Sample,
+    intrandom: intRandomSample,
+    greetall: greetAllSample,
+    sum: sumSample
 }
+
 
 for (key in tasks) {
     if (union.toLowerCase() == key) {
-        [key]
+        tasks[key]()
     }
 }
 

@@ -11,9 +11,9 @@ switch (union.toLowerCase()){
               break
     case "sum3": sum3Sample()
               break
-    case "intRandom": intRandomSample()
+    case "intrandom": intRandomSample()
               break
-    case "greetAll": greetAllSample()
+    case "greetall": greetAllSample()
               break
     case "sum": sumSample()
               break
