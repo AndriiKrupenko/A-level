@@ -1,4 +1,4 @@
-// Подсветить строку и столбец, в которой находится подсвеченная ячейка. Используйте parentElement (родительский элемент элемента DOM), и список его детей: children.
+// переписать таблица/подсветка на замыканиях (вместо tr или td - this, вместо rowIndex, cellIndex - i, j)
 //------------------
 
 let table = document.createElement("table")
@@ -35,25 +35,26 @@ for (let i = 0; i < 10; i++) {
         tr.appendChild(td)
             
         td.onmouseover = function () {
-            for (tr of table.children) {
-                for (td of tr.cells) {
-                    if (td.parentElement === this.parentElement) {
-                        td.style.backgroundColor = 'yellow'
+            console.log()
+            for (row of table.children) {
+                for (cell of row.cells) {
+                    if (cell.parentElement === this.parentElement) {
+                        cell.style.backgroundColor = 'yellow'
                     }
-                    if (td.cellIndex === this.cellIndex) {
-                        td.style.backgroundColor = 'yellow'
+                    if (cell.cellIndex === j) {
+                        cell.style.backgroundColor = 'yellow'
                     }
                 }
             }
             this.style.backgroundColor = 'red'
         }
         td.onmouseout = function(){
-            for (tr of table.children) {
-                for (td of tr.cells) {
-                    if (tr.rowIndex % 2 == 0) {
-                        td.style.backgroundColor = '#fcfcfc'
+            for (row of table.children) {
+                for (cell of row.cells) {
+                    if (row.rowIndex % 2 == 0) {
+                        cell.style.backgroundColor = '#fcfcfc'
                     } else {
-                        td.style.backgroundColor = '#f1f1f1'
+                        cell.style.backgroundColor = '#f1f1f1'
                     }
                 }
             }
