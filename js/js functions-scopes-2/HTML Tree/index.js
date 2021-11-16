@@ -2,29 +2,53 @@
 //(Сделать HTML - конструктор из деревянной структуры)
 //------------------
 
-let tr = {
-    tr1: {td1: 'some text', td2: 'some text 2'},
+var someTree = {
+    tagName: "table", 
+    children: [ 
+        {
+            tagName: "tr",
+            children: [
+                {
+                    tagName: "td",
+                    text: "some text",
+                },
+                {
+                    tagName: "td",
+                    text: "some text 2",
+                }
+            ]
+        }
+    ],
+    attrs: 
+    {
+        border: 1,
+    },
 }
 
-let str
+//------------------
 
-function htmlTree(obj, constrFunc) {
-    str = "<table border=1>\n"
+let str = ''
 
-    for (key in tr) {
-    str += "\t<tr>\n"
+function treeConstructor(parent, level = 0) {
+    let attrsStr = ''
+    for (key in parent.attrs) {
+        attrsStr += `${key}='${parent.attrs[key]}' `
+    }
+    str = "    ".repeat(level) + `<${parent.tagName} ${attrsStr}>\n`
 
-        for (key2 in tr[key]) {
-            str += `\t\t<td>${tr[key][key2]}</td>\n`
+    for (let child of parent.children) {
+        if (child.children) {
+            str += treeConstructor(child, level + 1) 
         }
-
-    str += "\t</tr>\n"
+        if (child.text) {
+            str += "    ".repeat(level + 1) + `<${child.tagName}>${child.text}</${child.tagName}>\n`
+        } 
     }
     
-    str += "</table>"
+    str += "    ".repeat(level) + `</${parent.tagName}>\n`
+    return str
 }
 
-htmlTree(tr)
+treeConstructor(someTree)
+
 console.log(str)
-
-

@@ -12,20 +12,54 @@
 // Переносы строк и отступы в результате не принципиальны, главное - структура HTML Проверьте ваш код на других структурах.
 //------------------
 
-let tr = {
-    tr1: {td1: 'some text', td2: 'some text 2'},
+// let tr = {
+//     tr1: {td1: 'some text', td2: 'some text 2'},
+// }
+
+
+var someTree = {
+    tagName: "table", 
+    children: [ 
+        {
+            tagName: "tr",
+            children: [
+                {
+                    tagName: "td",
+                    text: "some text",
+                },
+                {
+                    tagName: "td",
+                    text: "some text 2",
+                }
+            ]
+        }
+    ],
+    attrs: 
+    {
+        border: 1,
+    },
 }
 
-let str = "<table border=1>\n"
-for (key in tr) {
-    str += "\t<tr>\n"
-    for (key2 in tr[key]) {
-        str += `\t\t<td>${tr[key][key2]}</td>\n`
+
+let str = ''
+
+function treeConstructor(obj) {
+    let attrsStr = ''
+    for (key in obj.attrs) {
+        attrsStr += `${key}='${obj.attrs[key]}' `
     }
-    str += "\t</tr>\n"
+    str += `<${obj.tagName} ${attrsStr}>\n`
+    for (child of obj.children) {
+        str += `\t<${child.tagName}>\n`
+        for (key of child.children) {
+            str += `\t\t<${key.tagName}>${key.text}</${key.tagName}>\n`
+        }
+        str += `\t</${child.tagName}>\n`   
+    }
+    str += `</${obj.tagName}>`
 }
 
-str += "</table>"
+treeConstructor(someTree)
 
 console.log(str)
 
