@@ -31,3 +31,4 @@ var value3 = saver2()
 var value4 = saver2()
 
 alert(value3 === value4)
+
