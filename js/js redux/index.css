@@ -1,0 +1,29 @@
+* {
+  box-sizing: border-box;
+}
+
+button {
+  width: 100%;
+  font-size: 2em;
+}
+input,
+button,
+select {
+  width: 100%;
+  font-size: 2em;
+}
+
+table {
+  margin-top: 10px;
+  border: 1px;
+  border-collapse: collapse;
+}
+
+td,
+th {
+  border: 1px solid black;
+}
+
+/*div#content {*/
+/*display: none;*/
+/*}*/
