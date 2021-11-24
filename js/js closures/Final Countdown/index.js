@@ -14,12 +14,13 @@
         console.log(i)
         i--
     }
+    
+    for (let j = 0; j < 5; j++) {
+        setTimeout(count, j*1000)
+    }
 
-    setTimeout(count, 1000)
-    setTimeout(count, 2000)
-    setTimeout(count, 3000)
-    setTimeout(count, 4000)
-    setTimeout(count, 5000)
-    setTimeout(() => console.log("поехали!"), 6000)  
+    setTimeout(() => console.log("поехали!"), 5000)  
 }())
+
+
 

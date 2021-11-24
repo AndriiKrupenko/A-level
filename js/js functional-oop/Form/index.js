@@ -47,7 +47,7 @@ function Form(el, data, okCallback, cancelCallback) {
             let input = document.createElement('input')
                 input.type = 'checkbox'
                 input.placeholder = key
-                input.value       = value
+                input.checked = value
                 input.oninput     = () => oninput(input.checked)
                 //label for с input type='checkbox' внутри
                 return input
@@ -110,7 +110,6 @@ function Form(el, data, okCallback, cancelCallback) {
         })
         td.append(input)
         td.append(inputError)
-        
     }
 
     if (typeof okCallback === 'function'){
@@ -133,19 +132,46 @@ function Form(el, data, okCallback, cancelCallback) {
         }
     }
 
-    let defaultData = JSON.stringify(data)
+    let defaultData = {};
+    (function defaultDataCreator(data) {
+        for (let key in data) {
+           defaultData[key] = data[key] 
+        }
+    })(this.data)
 
     if (typeof cancelCallback === 'function'){
         formBody.appendChild(cancelButton);
         // cancelButton.onclick = cancelCallback
         cancelButton.onclick = () => {
-            this.data = JSON.parse(defaultData)
+            this.data = defaultData
+            let inputs = document.getElementsByTagName('input')
+            for (let input of inputs) {
+                for (let key in this.data) {
+                    if (input.placeholder == key) {
+                        input.value = this.data[key]
+                        input.checked = this.data[key]
+                        let valueValidate = () => {
+                            for (key of input.value.split("")) {
+                                if (key != "*") {
+                                    return false
+                                }
+                            }
+                            return true
+                        }
+                        if (valueValidate() === true) {
+                            input.value = ""
+                        }
+                        if (input.type == 'datetime-local') {
+                            input.value = new Date(this.data[key]).toISOString().slice(0, -1)
+                        }
+                    }
+                }
+            }
         }
     }
 
     el.appendChild(formBody)
-
-    
+   
 }
 
 
