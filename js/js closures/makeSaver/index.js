@@ -17,7 +17,7 @@
 //------------------
 
 function makeSaver(fn) {
-    let value = fn
+    let value = fn //какое-то уникальное значение
     return () => {
         if (value == fn) {
             value = fn()

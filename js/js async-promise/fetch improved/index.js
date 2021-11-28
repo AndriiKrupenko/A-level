@@ -38,7 +38,7 @@ function objectCreator(el, data) {
                     button.innerText = "Link"
                 }
             }
-        } else if (data[key].includes('https://swapi.dev/api/')) {
+        } else if (data[key].constructor.name == 'String' && data[key].includes('https://swapi.dev/api/')) {
             let button = document.createElement('button')
             td.append(button)
             button.style.width = "50px"
