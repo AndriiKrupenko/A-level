@@ -9,23 +9,19 @@ const getGQL = url =>
         headers: {
             //заголовок content-type
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + localStorage.authToken
+            ...(localStorage.authToken ? {"Authorization": "Bearer " + localStorage.authToken} :
+                                         {})
         },
         //body с ключами query и variables 
         body: JSON.stringify({query, variables})
         }).then(res => res.json())
             .then(data => {
-                for (key in data.data) {
-                    data = data.data[key]
-                }
-                if (data) {
-                return data
-                } else {
-                return new Error('Error')
-                }
+            if (data.errors && !data.data)
+                throw new Error(JSON.stringify(data.errors))
+            return data.data[Object.keys(data.data)[0]]
+        })  
         //расковырять data, если все ок - отдать data.login или data.CategoryFindOne, или шо там еще
         //если есть errors и нет data, то выбросить исключение и тем самым зареджектить промис
-        }).catch(error => console.log(error))
     
 const gql = getGQL('http://shop-roles.asmer.fs.a-level.com.ua/graphql')
     
@@ -93,7 +89,7 @@ function categoryAll(){
     }`)
 }
 
-//categoryAll().then(res => console.log(res))
+// categoryAll().then(res => console.log(res))
 
 function catById(_id){
     return gql(`query catById($query:String){
