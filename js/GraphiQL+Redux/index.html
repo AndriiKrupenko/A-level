@@ -5,8 +5,31 @@
     <title>GQL</title>
     <meta charset='utf8' />
     <style>
+        header {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        input {
+            margin-bottom: 25px;
+        }
+        .log-reg-form {
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 50px;
+            padding-top: 30px;
+            text-align: center;
+            width: 250px;
+            height: 150px;
+            border: 1px solid black;
+            border-radius: 10px
+        }
         #mainContainer {
             display: flex;
+        }
+
+        #main {
+            width: 40%;
         }
 
         #aside {
@@ -14,13 +37,23 @@
         }
 
         #aside>a {
+            margin-top: 10px;
             display: block;
         }
     </style>
 </head>
 
 <body>
-    <header>КУДА Я ПОПАЛ?</header>
+    <header id="header">
+        <!-- <label for="login">Login: </label>
+        <input id='login' type="text" placeholder="Login"/>
+        <label for="password">Password: </label>
+        <input id='password' type="password" placeholder="Password" /> -->
+        <div id="loginForm">
+        <a id="loginButton"><button>Login</button></a>
+        <a id="regButton"><button>Registration</button></a>
+        </div>
+    </header>
     <div id='mainContainer'>
         <aside id='aside'>
             Категории

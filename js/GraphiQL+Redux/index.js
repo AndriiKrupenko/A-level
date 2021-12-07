@@ -239,6 +239,38 @@ const actionFullLogin = (login, password) =>
             dispatch(actionAuthLogin(token))
         }
     }
+
+//const actionRegister //actionPromise
+//const actionFullRegister = (login, password) => //actionRegister + actionFullLogin
+
+const actionRegister = (login, password) =>
+    actionPromise('reg', gql(`mutation reg($login: String, $password: String){
+        UserUpsert(user:{login:$login,
+    	password:$password,
+    	nick:$login}){
+            _id login
+        }
+}`, { login, password }))
+
+
+const actionFullRegister = (login, password) =>
+    async dispatch => {
+        let user = await dispatch(actionRegister(login, password))
+        if (user) {
+            let token = await dispatch(actionLogin(login, password))
+            if (token){
+            dispatch(actionAuthLogin(token))
+            }
+        }   
+    }
+
+//+ интерфейс к этому - форму логина, регистрации, может повесить это на #/login #/register 
+loginButton.href = '#/login'
+regButton.href = '#/register'
+
+//+ #/orders показывает ваши бывшие заказы:
+    //сделать actionMyOrders
+    //
 //---------------for-combineReducers-end---------------------------------------------------------
 
 
@@ -344,12 +376,43 @@ window.onhashchange = () => {
     const [, route, _id] = location.hash.split('/')
 
     const routes = {
-        category(){
+        category() {
+            loginForm.style.display = "block"
+            // if (!loginForm) {
+            //     header.append(loginForm)
+            // }
             store.dispatch(actionCatById(_id))
         },
         good() {
+            loginForm.style.display = "block"
             store.dispatch(actionGoodById(_id))//задиспатчить actionGoodById
             // console.log('ТОВАРОСТРАНИЦА')
+        },
+        login() {
+            loginForm.style.display = "none"
+            main.innerHTML = `<div class="log-reg-form">
+                            <input id='login' type="text" placeholder="Login"/><br>
+                            <input id='password' type="password" placeholder="Password" /><br>
+                            <a id="loginPageButton"><button>Login</button></a></div>`
+            
+            //отрисовка тут
+            //по кнопке - store.dispatch(actionFullLogin(login, password))
+            loginPageButton.onclick = () => {
+                store.dispatch(actionFullLogin(login.value, password.value))
+            }
+        },
+        register() {
+            loginForm.style.display = "none"
+            main.innerHTML = `<div class="log-reg-form">
+                            <input id='login' type="text" placeholder="Login"/><br>
+                            <input id='password' type="password" placeholder="Password" /><br>
+                            <a id="regPageButton"><button>Registration</button></a></div>`
+            
+            //отрисовка тут
+            //по кнопке - store.dispatch(actionFullRegister(login, password))
+            regPageButton.onclick = () => {
+                store.dispatch(actionFullRegister(login.value, password.value))
+            }
         },
     }
     if (route in routes)
@@ -357,9 +420,6 @@ window.onhashchange = () => {
 }
 window.onhashchange()
 //------------------onhashchange-end-------------------------------------------------------------
-
-
-
 
 
 
