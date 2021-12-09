@@ -10,6 +10,10 @@
             top: 10px;
             right: 10px;
         }
+        header>div {
+            margin-bottom: 10px;
+        }
+
         input {
             margin-bottom: 25px;
         }
@@ -23,6 +27,12 @@
             height: 150px;
             border: 1px solid black;
             border-radius: 10px
+        }
+        .cart > img {
+            height: 50px;
+        }
+        .cart > input {
+            width: 30px;
         }
         #mainContainer {
             display: flex;
@@ -45,13 +55,18 @@
 
 <body>
     <header id="header">
-        <!-- <label for="login">Login: </label>
-        <input id='login' type="text" placeholder="Login"/>
-        <label for="password">Password: </label>
-        <input id='password' type="password" placeholder="Password" /> -->
         <div id="loginForm">
         <a id="loginButton"><button>Login</button></a>
         <a id="regButton"><button>Registration</button></a>
+        </div>
+        <div id="logout">
+            <a id="logoutButton"><button>Logout</button></a>
+        </div>
+        <div>
+            <a id="myOrders"><button>myOrders</button></a>
+        </div>
+        <div>
+            <button><a href="#/cart" id="cartIcon"></a></button>
         </div>
     </header>
     <div id='mainContainer'>

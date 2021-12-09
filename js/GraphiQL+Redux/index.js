@@ -51,8 +51,6 @@ const getGQL = url =>
         })
 
 const backURL = 'http://shop-roles.asmer.fs.a-level.com.ua'
-
-const myURL = 'file:///D:/Работа/JavaScript/NIX%20education/A-level/homework/js/GraphiQL+Redux/index.html'
     
 const gql = getGQL(`${backURL}/graphql`)
 //-----------------gql-end-----------------------------------------------------------------------
@@ -108,6 +106,52 @@ const actionPromise = (name, promise) =>
         catch(error){
             dispatch(actionRejected(name, error))
         }
+    }
+
+//+ #/orders показывает ваши бывшие заказы:
+myOrders.href = '#/orders'
+
+//сделать actionMyOrders
+const actionMyOrders = () =>
+    actionPromise('myOrders', gql(`
+        query {
+            OrderFind(query: "[{}]"){
+                _id total orderGoods{
+                    price count total good{
+                        name 
+                    }
+                }
+            }
+        }`))
+
+// actionOrder 
+const actionOrder = () =>
+    async (dispatch, getState) => {
+        let {cart} = getState()
+//         //магия по созданию структуры вида
+//         //let orderGoods = [{good: {_id}, count}, {good: {_id}, count} .......]
+//         //из структуры вида
+//             //{_id1: {good, count},
+//             //{_id2: {good, count}}
+
+//         const orderGoods = Object.entries(cart)
+//                             .map(([_id, {надеструктуризировать good и count}]) => ({good: {_id}, count}))
+        
+        const orderGoods = Object.entries(cart)
+                            .map(([_id, {good, count}]) => ({good: {_id}, count}))
+
+        // const orderGoods = Object.entries(cart).map(([_id, obj]) => {
+        //     let { good, count } = obj
+        //     return { good: { _id }, count }
+        // })
+
+        await dispatch(actionPromise('order', gql(`
+            mutation newOrder($order:OrderInput){
+                OrderUpsert(order:$order){
+                    _id total
+                }
+            }
+            `, {order: {orderGoods}})))
     }
 //---------------for-promiseReducer-end----------------------------------------------------------
 
@@ -185,46 +229,7 @@ const actionAuthLogout = () => ({ type: 'AUTH_LOGOUT' })
 // console.log(store.getState())
 //поделать store.dispatch с разными action. Скопипастить токен
 //проверить перезагрузку страницы.
-//---------------for-authReducer-end-------------------------------------------------------------
 
-
-
-//---------------combineReducers-----------------------------------------------------------------
-function combineReducers(reducers){
-    return (state={}, action) => {
-        const newState = {}
-        for (const [reducerName, reducer] of Object.entries(reducers)) {
-            let newSubState = reducer(state[reducerName], action)
-            if (newSubState != state[reducerName]) {
-                newState[reducerName] = newSubState
-            }
-        }
-            if (Object.keys(newState).length != 0 ) {
-                return {...state, ...newState}
-            } else {
-                return state
-        }
-        //перебрать все редьюсеры
-            //запустить каждый их них
-            //передать при этом в него ЕГО ВЕТВЬ общего state, и action как есть
-            //получить newSubState
-            //если newSubState отличается от входящего, то записать newSubState в newState
-        //после цикла, если newState не пуст, то вернуть {...state, ...newState}
-        //иначе вернуть state
-    }
-}
-//---------------combineReducers-end-------------------------------------------------------------
-
-
-
-//---------------for-combineReducers-------------------------------------------------------------
-const combinedReducer = combineReducers({promise: promiseReducer, auth: authReducer})
-const store = createStore(combinedReducer)
-console.log(store.getState()) //{promise: {}, auth: {}}
-
-//store.dispatch(actionPromise('delay1000', delay(1000)))//{promise: {delay1000: '''}, auth: {}}
-//store.dispatch(actionAuthLogin(token))//{promise: {delay1000: '''}, auth: {token .....}}
-//ПЕРЕДЕЛАТЬ ОТОБРАЖЕНИЕ с поправкой на то, что теперь промисы не в корне state а в state.promise
 const actionLogin = (login, password) =>
     actionPromise('login', gql(`query login($login: String, $password: String){
         login(login:$login,
@@ -268,9 +273,104 @@ const actionFullRegister = (login, password) =>
 loginButton.href = '#/login'
 regButton.href = '#/register'
 
-//+ #/orders показывает ваши бывшие заказы:
-    //сделать actionMyOrders
-    //
+//---------------for-authReducer-end-------------------------------------------------------------
+
+
+
+//---------------cartReducer---------------------------------------------------------------------
+function cartReducer(state = {}, { type, good={}, count=1}){
+    //{
+    //  _id1: {good, count}
+    //  _id2: {good, count}
+    //}
+    const {_id } = good
+    const types = {
+        CART_ADD() {
+            //как CHANGE, только если ключ раньше был, то достать из него count и добавить
+            //к count из action. Если не было, достать 0 и добавить к count из action
+            return {
+                ...state,
+                [_id]: { good, count: count + (state[_id]?.count || 0)}
+            }
+        },
+        CART_REMOVE(){ //смочь скопировать объект и выкинуть ключ. как вариант через
+                        //деструктуризацию
+            let newState = { ...state }
+            delete newState[_id]
+            return {
+                newState
+            }            
+        },
+        CART_CHANGE(){
+            return {
+                ...state, //по аналогии с promiseReducer дописать
+                    [_id]:{good, count}
+            }
+        },
+        CART_CLEAR(){
+            return {}
+        },
+    }
+
+    if (type in types)
+        return types[type]()
+
+
+    return state
+}
+//---------------cartReducer-end------------------------------------------------------------------
+
+
+
+//---------------for-cartReducer------------------------------------------------------------------
+//понаписывать action
+//прикрутить к товару кнопку которая делает store.dispatch(actionCartAdd(good))
+const actionCartAdd = (good, count = 1) => ({ type: 'CART_ADD', good, count })
+const actionCartRemove = (good, count = 1) => ({ type: 'CART_REMOVE', good, count })
+const actionCartChange = (good, count = 1) => ({ type: 'CART_CHANGE', good, count })
+const actionCartClear = (good, count = 1) => ({ type: 'CART_CLEAR', good, count })
+
+cartIcon.href = '#/cart'
+//---------------for-cartReducer-end--------------------------------------------------------------
+
+
+
+//---------------combineReducers-----------------------------------------------------------------
+function combineReducers(reducers){
+    return (state={}, action) => {
+        const newState = {}
+        for (const [reducerName, reducer] of Object.entries(reducers)) {
+            let newSubState = reducer(state[reducerName], action)
+            if (newSubState != state[reducerName]) {
+                newState[reducerName] = newSubState
+            }
+        }
+            if (Object.keys(newState).length != 0 ) {
+                return {...state, ...newState}
+            } else {
+                return state
+        }
+        //перебрать все редьюсеры
+            //запустить каждый их них
+            //передать при этом в него ЕГО ВЕТВЬ общего state, и action как есть
+            //получить newSubState
+            //если newSubState отличается от входящего, то записать newSubState в newState
+        //после цикла, если newState не пуст, то вернуть {...state, ...newState}
+        //иначе вернуть state
+    }
+}
+//---------------combineReducers-end-------------------------------------------------------------
+
+
+
+//---------------for-combineReducers-------------------------------------------------------------
+const combinedReducer = combineReducers({promise: promiseReducer, auth: authReducer, cart: cartReducer})
+const store = createStore(combinedReducer)
+console.log(store.getState()) //{promise: {}, auth: {}}
+
+//store.dispatch(actionPromise('delay1000', delay(1000)))//{promise: {delay1000: '''}, auth: {}}
+//store.dispatch(actionAuthLogin(token))//{promise: {delay1000: '''}, auth: {token .....}}
+//ПЕРЕДЕЛАТЬ ОТОБРАЖЕНИЕ с поправкой на то, что теперь промисы не в корне state а в state.promise
 //---------------for-combineReducers-end---------------------------------------------------------
 
 
@@ -301,7 +401,7 @@ store.subscribe(() => {
 
 
 
-//-------------------catById-goodById------------------------------------------------------------
+//-------------------catById-goodById-Orders-----------------------------------------------------
 const actionCatById = (_id) =>  //добавить подкатегории
     actionPromise('catById', gql(`query catById($q: String){
         CategoryFindOne(query: $q){
@@ -327,7 +427,8 @@ const actionGoodById = (_id) =>
     
 
 store.subscribe(() => {
-    const { catById, goodById } = store.getState().promise
+    console.log(store.getState())
+    const { catById, goodById, myOrders } = store.getState().promise
     const [,route, _id] = location.hash.split('/')
     if (catById?.payload && route === 'category' ){
         const {name} = catById.payload 
@@ -343,14 +444,22 @@ store.subscribe(() => {
                 main.append(br)
             }
         }
-        for (const {_id, name, price, images} of catById.payload.goods){
+        for (const good of catById.payload.goods) {
+            const {_id, name, price, images} = good
             const card      = document.createElement('div')
             card.innerHTML = `<h2>${name}</h2>
                               <img src="${backURL}/${images[0].url}" />
                               <strong>${price}</strong>
-                              <a href="#/good/${_id}"><button>Подробнее...</button></a>`
+                              <a href="#/good/${_id}">Подробнее...</a>`
                                 // ТУТ ДОЛЖНА БЫТЬ ССЫЛКА НА СТРАНИЦУ ТОВАРА
                                 // ВИДА #/good/АЙДИ
+            
+            let addToCartButton = document.createElement('button')
+            addToCartButton.innerText = "Добавить в корзину"
+            addToCartButton.onclick = () => {
+                store.dispatch(actionCartAdd(good))
+            }
+            card.append(addToCartButton)
             main.append(card)
         }
     }
@@ -363,13 +472,30 @@ store.subscribe(() => {
             main.innerHTML = `<h1>${name}</h1>
                             <img src="${backURL}/${images[0].url}" />
                             <strong>${price}</strong>
-                            <button>Купить</button>`
+                            <button id="buyGoodButton">Купить</button>`
+            buyGoodButton.onclick = () => {
+                store.dispatch(actionCartAdd(goodById.payload))
+            }
+        }
+    }
+    if (myOrders?.payload && route === 'orders') {
+        if (myOrders.payload.length > 0) {
+            main.innerHTML = ''
+            for (let key of myOrders.payload) {
+                main.innerHTML += '<hr>'
+                const { _id, total, orderGoods } = key
+                main.innerHTML += `<p><b>OrderID:</b> ${_id}<br><b>OrderTOTAL:</b> ${total}</p>`
+                for (let position of orderGoods) {
+                    main.innerHTML += `<p><b>Good:</b> ${position.good.name} <b>Count:</b> ${position.count} <b>Price:</b> ${position.price} <b>Total:</b> ${position.total}</p>`
+                }  
+            }
+            main.innerHTML += '<hr>'
         }
     }
 })
-//-------------------catById-goodById-end--------------------------------------------------------
+//-------------------catById-goodById-Orders-end-------------------------------------------------
 
-
+    
 
 //------------------onhashchange-----------------------------------------------------------------
 window.onhashchange = () => {
@@ -377,19 +503,17 @@ window.onhashchange = () => {
 
     const routes = {
         category() {
-            loginForm.style.display = "block"
             // if (!loginForm) {
             //     header.append(loginForm)
             // }
             store.dispatch(actionCatById(_id))
         },
         good() {
-            loginForm.style.display = "block"
-            store.dispatch(actionGoodById(_id))//задиспатчить actionGoodById
+            //задиспатчить actionGoodById
+            store.dispatch(actionGoodById(_id))
             // console.log('ТОВАРОСТРАНИЦА')
         },
         login() {
-            loginForm.style.display = "none"
             main.innerHTML = `<div class="log-reg-form">
                             <input id='login' type="text" placeholder="Login"/><br>
                             <input id='password' type="password" placeholder="Password" /><br>
@@ -399,10 +523,11 @@ window.onhashchange = () => {
             //по кнопке - store.dispatch(actionFullLogin(login, password))
             loginPageButton.onclick = () => {
                 store.dispatch(actionFullLogin(login.value, password.value))
+                loginForm.style.display = "none"
+                logout.style.display = "block"
             }
         },
         register() {
-            loginForm.style.display = "none"
             main.innerHTML = `<div class="log-reg-form">
                             <input id='login' type="text" placeholder="Login"/><br>
                             <input id='password' type="password" placeholder="Password" /><br>
@@ -412,7 +537,39 @@ window.onhashchange = () => {
             //по кнопке - store.dispatch(actionFullRegister(login, password))
             regPageButton.onclick = () => {
                 store.dispatch(actionFullRegister(login.value, password.value))
+                loginForm.style.display = "none"
+                logout.style.display = "block"
             }
+        },
+        cart() { //задиспатчить
+            console.log(store.getState())
+            const cart = store.getState().cart
+            const [,route] = location.hash.split('/')
+            if (route === 'cart') {
+                main.innerHTML = ''
+                for (let good in cart) {
+            
+                    main.innerHTML += `<p class="cart"><img src="${backURL}/${cart[good].good.images[0].url}" /><span>${cart[good].good.name}</span> <input type="number" min="0" value="${cart[good].count}"></p><hr>`
+
+                    // input.oninput = () => {
+                    //     cart[good].count = input.value
+                    // }
+                }
+            }
+            main.innerHTML += '<br><button id="newOrder">Заказать</button>'
+            if (Object.keys(cart).length == 0) {
+                newOrder.style.display = "none"
+            }
+            newOrder.onclick = () => {
+                store.dispatch(actionOrder())
+                store.dispatch(actionCartClear())
+            }
+            // console.log('СДЕЛАТЬ СТРАНИЦУ С ПОЗИЦИЯМИ, полями ввода количества, картинками')
+            // console.log('и кнопкой, которая store.dispatch(actionOrder())')
+        },
+        // dashboard() //задиспатчить 
+        orders() { //задиспатчить 
+            store.dispatch(actionMyOrders())
         },
     }
     if (route in routes)
@@ -423,18 +580,33 @@ window.onhashchange()
 
 
 
+//------------------loginForm--------------------------------------------------------------------
+if (localStorage.authToken) {
+    loginForm.style.display = "none"
+} else {
+    logout.style.display = "none"
+}
+
+logoutButton.onclick = () => {
+    localStorage.authToken = ""
+    loginForm.style.display = "block"
+    logout.style.display = "none"
+}
+//------------------loginForm-end----------------------------------------------------------------
 
 
 
+store.subscribe(() => {
+    //подсчитать общее количество товаров в корзине (перебрать cart  и подсчитать общую
+    //сумму count)
+    //вывести это число в cartIcon
+    let goodsInCart = store.getState().cart
+    let allGoodsInCart = 0
+    for (let key in goodsInCart) {
+        allGoodsInCart += goodsInCart[key].count
+    }
+    // console.log(allGoodsInCart)
+    cartIcon.innerText = `Товаров в корзине: ${allGoodsInCart}`
 
-// const actionGoodsAll = () => 
-//     actionPromise('goodsAll', gql(`query {
-//         GoodFind(query: "[{}]"){
-//             _id name price categories{
-//                 name _id
-//             }
-//             images{
-//                 url
-//             }
-//         }
-//     }`))
+})
+
