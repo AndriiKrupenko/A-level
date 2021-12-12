@@ -525,6 +525,7 @@ window.onhashchange = () => {
                 store.dispatch(actionFullLogin(login.value, password.value))
                 loginForm.style.display = "none"
                 logout.style.display = "block"
+                myOrders.style.display = "block"
             }
         },
         register() {
@@ -602,6 +603,7 @@ window.onhashchange = () => {
             newOrder.onclick = () => {
                 store.dispatch(actionOrder())
                 store.dispatch(actionCartClear())
+                window.onhashchange()
             }
             // console.log('СДЕЛАТЬ СТРАНИЦУ С ПОЗИЦИЯМИ, полями ввода количества, картинками')
             // console.log('и кнопкой, которая store.dispatch(actionOrder())')
@@ -624,12 +626,14 @@ if (localStorage.authToken) {
     loginForm.style.display = "none"
 } else {
     logout.style.display = "none"
+    myOrders.style.display = "none"
 }
 
 logoutButton.onclick = () => {
     localStorage.authToken = ""
     loginForm.style.display = "block"
     logout.style.display = "none"
+    myOrders.style.display = "none"
 }
 //------------------loginForm-end----------------------------------------------------------------
 
