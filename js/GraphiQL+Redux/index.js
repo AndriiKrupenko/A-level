@@ -298,7 +298,7 @@ function cartReducer(state = {}, { type, good={}, count=1}){
             let newState = { ...state }
             delete newState[_id]
             return {
-                newState
+                ...newState
             }            
         },
         CART_CHANGE(){
@@ -547,19 +547,58 @@ window.onhashchange = () => {
             const [,route] = location.hash.split('/')
             if (route === 'cart') {
                 main.innerHTML = ''
+                let goodsInCart = document.createElement('div')
                 for (let good in cart) {
             
-                    main.innerHTML += `<p class="cart"><img src="${backURL}/${cart[good].good.images[0].url}" /><span>${cart[good].good.name}</span> <input type="number" min="0" value="${cart[good].count}"></p><hr>`
+                    let goodInCart = document.createElement('p')
+                    goodInCart.setAttribute('class', 'cart')
+                    goodsInCart.append(goodInCart)
 
-                    // input.oninput = () => {
-                    //     cart[good].count = input.value
-                    // }
+                    let goodImg = document.createElement('img')
+                    goodImg.setAttribute('src', `${backURL}/${cart[good].good.images[0].url}`)
+                    goodInCart.append(goodImg)
+
+                    let goodName = document.createElement('span')
+                    goodName.innerHTML = `${cart[good].good.name}`
+                    goodInCart.append(goodName)
+
+                    let goodCount = document.createElement('input')
+                    goodCount.setAttribute('type', 'number')
+                    goodCount.setAttribute('min', '0')
+                    goodCount.setAttribute('value', `${cart[good].count}`)
+                    goodInCart.append(goodCount)
+
+                    goodCount.oninput = () => {
+                        store.dispatch(actionCartChange(cart[good].good, +goodCount.value))
+                        // console.log(store.getState().cart)
+
+                    }
+
+                    let removeGood = document.createElement('button')
+                    removeGood.innerText = 'Удалить'
+                    goodInCart.append(removeGood)
+                    
+                    removeGood.onclick = () => { 
+                        store.dispatch(actionCartRemove(cart[good].good))
+                        window.onhashchange()
+                    }
+
+                    let hr = document.createElement('hr')
+                    goodInCart.append(hr)
+
                 }
+                
+                main.append(goodsInCart)
             }
-            main.innerHTML += '<br><button id="newOrder">Заказать</button>'
+
+            let newOrder = document.createElement('button')
+            newOrder.innerText = 'Заказать'
+            main.append(newOrder)
+
             if (Object.keys(cart).length == 0) {
                 newOrder.style.display = "none"
             }
+
             newOrder.onclick = () => {
                 store.dispatch(actionOrder())
                 store.dispatch(actionCartClear())
@@ -607,6 +646,5 @@ store.subscribe(() => {
     }
     // console.log(allGoodsInCart)
     cartIcon.innerText = `Товаров в корзине: ${allGoodsInCart}`
-
 })
 
