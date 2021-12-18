@@ -1,0 +1,79 @@
+.App {
+  text-align: center;
+}
+
+.Logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.Cart {
+  img {
+    width: 50px;
+  }
+}
+
+header {
+  display: flex;
+  max-height: 100px;
+  .Logo {
+    max-height: 100px;
+  }
+}
+
+main {
+  display: flex;
+
+  img {
+    max-width: 200px;
+  }
+
+  li {
+    list-style: none;
+  }
+
+  aside {
+    width: 16%;
+  }
+}
+
+footer {
+  max-height: 200px;
+  height: 200px;
+  background-color: #383838;
+  display: flex;
+
+  .Logo {
+    max-height: 150px;
+  }
+}
+
+// @media (prefers-reduced-motion: no-preference) {
+//   .Logo {
+//     animation: App-logo-spin infinite 20s linear;
+//   }
+// }
+
+// .App-header {
+//   background-color: #282c34;
+//   min-height: 100vh;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: center;
+//   font-size: calc(10px + 2vmin);
+//   color: white;
+// }
+
+// .App-link {
+//   color: #61dafb;
+// }
+
+// @keyframes App-logo-spin {
+//   from {
+//     transform: rotate(0deg);
+//   }
+//   to {
+//     transform: rotate(360deg);
+//   }
+// }

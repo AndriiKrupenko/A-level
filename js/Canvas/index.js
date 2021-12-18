@@ -207,14 +207,42 @@ class Line extends Drawable {
     }
     
 
-    draw(){
+    draw(selected){
         ctx.beginPath();
         ctx.moveTo(this.x, this.y);
         ctx.lineTo(this.x + this.width, this.y + this.height);
         ctx.closePath();
         ctx.strokeStyle = this.color;
-        ctx.lineWidth   = this.lineWidth
+        ctx.lineWidth = this.lineWidth;
         ctx.stroke();
+        if (selected) {
+            ctx.beginPath();
+            // ctx.moveTo(this.x, this.y);
+            ctx.moveTo(this.x + this.width, this.y + this.height);
+            ctx.lineTo(this.x, this.y);
+            ctx.closePath();
+            ctx.strokeStyle = "green";
+            ctx.lineWidth +=2
+            ctx.stroke();
+        }
+    }
+
+    in(x, y) {
+        const a = Math.atan2(this.height, this.width) //угол наклона линии
+        const b = Math.atan2(y - this.y, x - this.x) //угол мыши
+        const c = b - a
+        const distance = this.distanceTo(this.x + this.width, this.y + this.height)
+        const distanceClick = this.distanceTo(x, y)
+        // const distance =  Math.sqrt((x - this.x) * (x - this.x) + (y - this.y) * (y - this.y)) //расстояние от начала линии до курсора
+        // console.log(c)
+
+        const newX = Math.cos(c)*distanceClick
+        const newY = Math.sin(c)*distanceClick
+        
+        // console.log(newX, newY)
+
+        return  0 <= newX && newX <= distance &&
+                -0.5* this.lineWidth <= newY && newY <= 0.5* this.lineWidth
     }
 }
 
