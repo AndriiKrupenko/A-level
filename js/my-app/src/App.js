@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import logo from './logo.svg';
 import './App.scss';
 import thunk from 'redux-thunk';
@@ -375,15 +376,20 @@ const CCategory = connect(state => ({ cat: state.promise.catById?.payload || {}}
 
 
 
-// const CartListItem = ({_id, name}) =>
-//   <li>{name}</li>
+const LoginForm = ({onLogin}) => { 
+    const [login, setLogin] = useState('')
+    const [password, setPassword] = useState('')
 
-let cartItemValue
-
-const getInputValue = (e) => {
-  cartItemValue = e.target.value
-  return cartItemValue
+    return (
+        <>
+            <input type="text" style={{ backgroundColor: login ? '' : 'red' }} value={login} onChange={e => setLogin(e.target.value)}/>
+            <input type="text" style={{ backgroundColor: password ? '' : 'red' }} value={password} onChange={e => setPassword(e.target.value)}/>
+            <button disabled={!(login && password)} onClick={ () => onLogin(login, password)}>Login</button>
+        </>
+    )
 }
+
+const CLoginForm = connect(null, { onLogin: actionFullLogin })(LoginForm)
 
 const Cart = ({ cart, onCartChange, onCartRemove }) =>
 <div className='Cart'> 
@@ -397,7 +403,7 @@ const Cart = ({ cart, onCartChange, onCartRemove }) =>
           {/* {cart[goodId].good.images && cart[goodId].good.images[0] && cart[goodId].good.images[0].url && <img src={backURL + '/' + cart[goodId].good.images[0].url} />} */}
           {<img src={backURL + '/' + cart[goodId].good.images[0].url} />}
           {cart[goodId].good.name}
-          <input type='number' min="0" value={cart[goodId].count} onInput={getInputValue} onChange={() => onCartChange(cart[goodId].good, +cartItemValue)} />
+          <input type='number' min="0" value={cart[goodId].count} onChange={(e) => onCartChange(cart[goodId].good, +e.target.value)} />
           <button onClick={ () => onCartRemove(cart[goodId].good)}>Удалить</button>
         </li>
       )}
@@ -436,6 +442,7 @@ function App() {
   return (
     <Provider store={store}>
       <div className="App">
+        <CLoginForm />
         <Header />
         <Main />
         <Footer/>
