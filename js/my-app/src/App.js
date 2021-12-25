@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.scss';
 import thunk from 'redux-thunk';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider, connect } from 'react-redux';
+import {Router, Route, Link, Redirect, Switch} from 'react-router-dom';
+import createHistory from "history/createBrowserHistory";
 
+const history = createHistory()
 
 //-----------------gql---------------------------------------------------------------------------
 const getGQL = url =>
@@ -291,16 +294,29 @@ store.dispatch(actionRootCats())
 store.dispatch(actionCatById('5dc458985df9d670df48cc47'))
 
 const Logo = () =>
-<img src={logo} className="Logo" alt="logo" />
-
+<Link to="/" >
+    <img src={logo} className="Logo" alt="logo" />
+</Link>
+        
 const Header = () =>
 <header>
     <Logo /> 
     <CKoshik />
+    <Link to="/cart" >
+        <button>My Cart</button>
+    </Link>
+    <Link to="/login" >
+        <button>Login</button>
+    </Link>
+    <Link to="/registration" >
+        <button>Registration</button>
+    </Link>
 </header>
 
 const CategoryListItem = ({_id, name}) =>
-  <li><a href={`#/category/${_id}`}>{name}</a></li>
+    <li>
+        <Link to={`/category/${_id}`}>{name}</Link>
+    </li>
 
   
 
@@ -344,6 +360,7 @@ const GoodCard = ({ good: { _id, name, price, images }, onAdd }) =>
     <h2>{name}</h2>
     {images && images[0] && images[0].url && <img src={backURL + '/' + images[0].url} />}
     <strong>{price}</strong>
+    <Link to={`/good/${_id}`}>Подробнее</Link>
     <button onClick={ () => onAdd({ _id, name, price, images })}>+</button>
   </li>
 
@@ -369,7 +386,7 @@ const CKoshik = connect(({ cart }) => ({cart}))(Koshik)
 const Category = ({ cat: { name, goods=[] }= { } }) => 
   <div className='Category'>
     <h1>{name}</h1>
-    <ul>{goods.map(good => <CGoodCard good={good} />)}</ul>
+    <ul>{(goods || []).map(good => <CGoodCard good={good} />)}</ul>
   </div>
 
 const CCategory = connect(state => ({ cat: state.promise.catById?.payload || {}}))(Category)
@@ -390,6 +407,25 @@ const LoginForm = ({onLogin}) => {
 }
 
 const CLoginForm = connect(null, { onLogin: actionFullLogin })(LoginForm)
+
+
+
+const RegistrationForm = ({onReg}) => { 
+    const [login, setLogin] = useState('')
+    const [password, setPassword] = useState('')
+
+    return (
+        <>
+            <input type="text" style={{ backgroundColor: login ? '' : 'red' }} value={login} onChange={e => setLogin(e.target.value)}/>
+            <input type="text" style={{ backgroundColor: password ? '' : 'red' }} value={password} onChange={e => setPassword(e.target.value)}/>
+            <button disabled={!(login && password)} onClick={ () => onReg(login, password)}>Registration</button>
+        </>
+    )
+}
+
+const CRegistrationForm = connect(null, { onReg: actionFullRegister })(RegistrationForm)
+
+
 
 const Cart = ({ cart, onCartChange, onCartRemove }) =>
 <div className='Cart'> 
@@ -414,17 +450,75 @@ const CCart = connect(state => ({ cart: state.cart || {}}), {onCartChange: actio
 //const CCart = connect(забрать из редакса корзину положить в пропс cart, 
                        //дать компоненту onCartChange и onCartRemove с соответствующими actionCreator)(Cart)
 
-                       
+
+
+const PageMain = () => 
+    <h1>Главная страница</h1>
+
+
+    
+const Page404 = () => 
+    <h1>404</h1>
+
+
+
+const PageCategory = ({ match: { params: { _id } }, getData}) => { 
+    useEffect(() => {
+        getData(_id)
+    }, [_id])
+    return (
+        <>
+            {/* <h1>{_id}</h1> */}
+            <CCategory />
+        </>
+    )
+}
+
+const CPageCategory = connect(null, { getData: actionCatById })(PageCategory)
+
+
+
+const PageGood = ({ match: { params: { _id } }, getData}) => { 
+    useEffect(() => {
+        getData(_id)
+    }, [_id])
+    return (
+        <>
+            <CGoodPageCard />
+        </>
+    )
+}
+
+const CPageGood = connect(null, { getData: actionGoodById })(PageGood)
+
+
+
+const GoodPageCard = ({ good: { _id, name, price, images }, onAdd }) =>
+  <li className='GoodCard'>
+    <h2>{name}</h2>
+    {images && images[0] && images[0].url && <img src={backURL + '/' + images[0].url} />}
+    <strong>{price}</strong>
+    <button onClick={ () => onAdd({ _id, name, price, images })}>В корзину</button>
+  </li>
+
+const CGoodPageCard = connect(state => ({ good: state.promise.goodById?.payload || {}}), { onAdd: actionCartAdd })(GoodPageCard)
+
+
 
 const Main = () =>
 <main>
     <Aside />
     <Content>
-        {/* <Category cat={{name: 'ЗАГЛУШКА'}} /> */}
-        <CCategory />
-        {/* ТУТ ДЛОЖЕН бЫТЬ ЦКАРТ */}
-        <CCart />
-        {/* <Cart /> */}
+        <Switch>
+            <Redirect from="/main" to="/" />
+            <Route path="/" component={PageMain} exact />
+            <Route path="/category/:_id" component={CPageCategory} />
+            <Route path="/good/:_id" component={CPageGood} />
+            <Route path="/cart" component={CCart} />
+            <Route path="/login" component={CLoginForm} />
+            <Route path="/registration" component={CRegistrationForm} />
+            <Route path="*" component={Page404} />
+        </Switch>
     </Content>
 </main>
 
@@ -440,14 +534,15 @@ const Footer = () =>
 
 function App() {
   return (
-    <Provider store={store}>
-      <div className="App">
-        <CLoginForm />
-        <Header />
-        <Main />
-        <Footer/>
-      </div>
-    </Provider>
+    <Router history={history}>
+        <Provider store={store}>
+            <div className="App">
+                <Header />
+                <Main />
+                <Footer/>
+            </div>
+        </Provider>
+    </Router>
   );
 }
 
