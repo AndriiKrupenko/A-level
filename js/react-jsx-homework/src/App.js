@@ -176,9 +176,10 @@ import clockS from './images/ClockFace_S.png'
 //   return (
 //     <>
 //       <h1>Timer</h1>
-//       {time >= 0 && !pause && <p>{format(time)}</p>}
-//       {time > 0 && pause && <p>Pause</p>}
+//       {time >= 0 && !pause && <span>{format(time)}</span>}
+//       {time > 0 && pause && <span>{`Pause ${format(time)}`}</span>}
 //       <button disabled={!(time)} onClick={() => setPause(pause => !pause)}>Pause</button>
+//       <br />
 //     </>
 //   )
 // }
@@ -201,48 +202,21 @@ import clockS from './images/ClockFace_S.png'
 // Напишите компонент, с тремя полями ввода (часы, минуты и секунды) и кнопкой Start, по которой будет стартовать компонент Timer
 //---------------------------------------------------------------------------------------------------------
 
-// const Timer = ({ sec, ms=1000 }) => { 
-//   const [time, setTime] = useState(sec)
-//   const [pause, setPause] = useState(false)
+// const TimerControl = () => { 
+//   const [newTime, setNewTime] = useState(null)
 //   const [inputHours, setInputHours] = useState(0)
 //   const [inputMinutes, setInputMinutes] = useState(0)
 //   const [inputSeconds, setInputSeconds] = useState(0)
 
-//   const padTime = time => {
-//     return String(time).length === 1 ? `0${time}` : `${time}`
-//   }
-  
-//   const format = time => {
-//     const hours = Math.floor(time / 60**2)
-//     const minutes =  Math.floor(time / 60) % 60
-//     const seconds = time % 60
-
-//     return `${hours}:${padTime(minutes)}:${padTime(seconds)}`
-//   }
-  
-//   useEffect(() => {
-//     let interval = null
-//     if (!pause && time > 0) {
-//       interval = setInterval(() => {
-//         setTime(time => time - 1)
-//         // console.log(time)
-//       }, ms)
-//     } 
-//     return () => {
-//       clearInterval(interval)
-//     }
-//    }, [pause, time])
-
 //   return (
 //     <>
-//       <h1>Timer</h1>
-//       {time >= 0 && !pause && <p>{format(time)}</p>}
-//       {time > 0 && pause && <p>Pause</p>}
+//       {!newTime && <h1>Create new Timer</h1>}
+//       {newTime && <Timer sec={newTime} />}
 //       <input type='number' min="0" placeholder='hours' onChange={e => setInputHours(+e.target.value)} />
 //       <input type='number' min="0" max="60" placeholder='minutes' onChange={e => setInputMinutes(+e.target.value)} />
 //       <input type='number' min="0" max="60" placeholder='seconds' onChange={e => setInputSeconds(+e.target.value)} />
-//       <button onClick={() => setTime(inputHours*60*60 + inputMinutes*60 + inputSeconds)}>Start</button>
-//       <button disabled={!(time)} onClick={() => setPause(pause => !pause)}>Pause</button>
+//       <button onClick={() => setNewTime(inputHours * 60 * 60 + inputMinutes * 60 + inputSeconds)}>Start</button>
+//       <button onClick={() => setNewTime(null)}>Stop</button>
 //     </>
 //   )
 // }
@@ -250,7 +224,7 @@ import clockS from './images/ClockFace_S.png'
 // function App() {
 //   return (
 //     <div className="App">
-//       <Timer sec={3605} />
+//       <TimerControl />
 //     </div>
 //   );
 // }
@@ -336,18 +310,19 @@ import clockS from './images/ClockFace_S.png'
 //   return (
 //     <>
 //       <h1>Timer</h1>
-//       <h2>{seconds >= 0 && <p>{format(seconds)}</p>}</h2>
+//       {seconds >= 0 && <span>{format(seconds)}</span>}
 //     </>
 //   )
 // }
 
 // const TimerContainer = ({ seconds = 1000, refresh = 1000, render: Component }) => {
 //   const [time, setTime] = useState(seconds)
+//   const [pause, setPause] = useState(false)
 
 //   useEffect(() => {
 //     let interval = null
 //     let t0 = performance.now()
-//     if (time > 0) {
+//     if (!pause && time > 0) {
 //       interval = setInterval(() => {
 //         setTime(time => time - Math.floor((performance.now() - t0)/1000))
 //         // console.log(time)
@@ -356,10 +331,13 @@ import clockS from './images/ClockFace_S.png'
 //     return () => {
 //       clearInterval(interval)
 //     }
-//    }, [time])
+//    }, [pause, time])
 
 //   return (
-//     <Component seconds={time} />
+//     <>
+//       <Component seconds={time} />
+//       <button disabled={!(time)} onClick={() => setPause(pause => !pause)}>Pause</button>
+//     </>
 //   )
 // }
 
@@ -386,113 +364,31 @@ import clockS from './images/ClockFace_S.png'
 // есть еще всякий css (text-orientation) для вращения цифр внутри повернутого блока
 //---------------------------------------------------------------------------------------------------------
 
-const Timer = ({ seconds=1000 }) => { 
+// const Timer = ({ seconds=1000 }) => { 
   
-    const hoursArrow = (seconds / 60**2)*30
-    const minutesArrow =  ((seconds / 60) % 60)*6
-    const secondsArrow = (seconds % 60)*6
-
-  return (
-      <div className='WatchContainer'>
-        <img src={clockFace} />
-        <img src={clockH} style={{ transform: `rotate(${hoursArrow}deg)` }} />
-        <img src={clockM} style={{ transform: `rotate(${minutesArrow}deg)` }} />
-        <img src={clockS} style={{ transform: `rotate(${secondsArrow}deg)` }} />
-      </div>
-  )
-}
-
-const TimerContainer = ({ seconds = 1000, refresh = 1000, render: Component }) => {
-  const [time, setTime] = useState(seconds)
-
-  useEffect(() => {
-    let interval = null
-    let t0 = performance.now()
-    if (time > 0) {
-      interval = setInterval(() => {
-        setTime(time => time + (performance.now() - t0)/1000)
-        // console.log(time)
-      }, refresh)
-    } 
-    return () => {
-      clearInterval(interval)
-    }
-   }, [time])
-
-  return (
-    <Component seconds={time} />
-  )
-}
-
-function App() {
-  return (
-    <div className="App">
-      <TimerContainer seconds={7200 + Date.now()/1000} refresh={10} render={Timer} />
-    </div>
-  );
-}
-
-export default App;
-
-
-
-//---------------------------------------------------------------------------------------------------------
-// TimerControl + TimerContainer
-//---------------------------------------------------------------------------------------------------------
-// Используя TimerControl обновите его код, в котором будет использоваться не Timer, а новый контейнерный компонент
-//---------------------------------------------------------------------------------------------------------
-
-// const TimerControl = ({ seconds = 1000 }) => { 
-//   const [time, setTime] = useState(seconds)
-//   const [pause, setPause] = useState(false)
-//   const [inputHours, setInputHours] = useState(0)
-//   const [inputMinutes, setInputMinutes] = useState(0)
-//   const [inputSeconds, setInputSeconds] = useState(0)
-
+//     const hoursArrow = (seconds / 60**2)*30
+//     const minutesArrow =  ((seconds / 60) % 60)*6
+//     const secondsArrow = (seconds % 60)*6
 
 //   return (
-//     <>
-//       <Timer seconds={seconds} />
-//       <input type='number' min="0" placeholder='hours' onChange={e => setInputHours(+e.target.value)} />
-//       <input type='number' min="0" max="60" placeholder='minutes' onChange={e => setInputMinutes(+e.target.value)} />
-//       <input type='number' min="0" max="60" placeholder='seconds' onChange={e => setInputSeconds(+e.target.value)} />
-//       <button onClick={() => setTime(inputHours*60*60 + inputMinutes*60 + inputSeconds)}>Start</button>
-//       <button disabled={!(seconds)} onClick={() => setPause(pause => !pause)}>Pause</button>
-//     </>
-//   )
-// }
-
-
-// const Timer = ({ seconds }) => { 
-//   const padTime = time => {
-//     return String(time).length === 1 ? `0${time}` : `${time}`
-//   }
-  
-//   const format = time => {
-//     const hours = Math.floor(time / 60**2)
-//     const minutes =  Math.floor(time / 60) % 60
-//     const seconds = time % 60
-
-//     return `${hours}:${padTime(minutes)}:${padTime(seconds)}`
-//   }
-
-//   return (
-//     <>
-//       <h1>Timer</h1>
-//       <h2>{seconds >= 0 && <p>{format(seconds)}</p>}</h2>
-//     </>
+//       <div className='WatchContainer'>
+//         <img src={clockFace} />
+//         <img src={clockH} style={{ transform: `rotate(${hoursArrow}deg)` }} />
+//         <img src={clockM} style={{ transform: `rotate(${minutesArrow}deg)` }} />
+//         <img src={clockS} style={{ transform: `rotate(${secondsArrow}deg)` }} />
+//       </div>
 //   )
 // }
 
 // const TimerContainer = ({ seconds = 1000, refresh = 1000, render: Component }) => {
 //   const [time, setTime] = useState(seconds)
-  
+//   let t0 = performance.now()
+
 //   useEffect(() => {
 //     let interval = null
-//     let t0 = performance.now()
 //     if (time > 0) {
 //       interval = setInterval(() => {
-//         setTime(time => time - Math.floor((performance.now() - t0)/1000))
+//         setTime(time => time + (performance.now() - t0)/1000)
 //         // console.log(time)
 //       }, refresh)
 //     } 
@@ -502,18 +398,102 @@ export default App;
 //    }, [time])
 
 //   return (
-//     <>
-//       <Component seconds={time} />
-//     </>
+//     <Component seconds={time} />
 //   )
 // }
 
 // function App() {
 //   return (
 //     <div className="App">
-//       <TimerContainer seconds={3605} refresh={2000} render={TimerControl} />
+//       <TimerContainer seconds={7200 + Date.now()/1000} refresh={10} render={Timer} />
 //     </div>
-//   )
+//   );
 // }
 
 // export default App;
+
+
+
+//---------------------------------------------------------------------------------------------------------
+// TimerControl + TimerContainer
+//---------------------------------------------------------------------------------------------------------
+// Используя TimerControl обновите его код, в котором будет использоваться не Timer, а новый контейнерный компонент
+//---------------------------------------------------------------------------------------------------------
+
+const TimerControl = () => { 
+  const [newTime, setNewTime] = useState(null)
+  const [inputHours, setInputHours] = useState(0)
+  const [inputMinutes, setInputMinutes] = useState(0)
+  const [inputSeconds, setInputSeconds] = useState(0)
+
+  return (
+    <>
+      {!newTime && <h1>Create new Timer</h1>}
+      {newTime && <TimerContainer seconds={newTime} refresh={1000} render={Timer} />}
+      <br/>
+      <input type='number' min="0" placeholder='hours' onChange={e => setInputHours(+e.target.value)} />
+      <input type='number' min="0" max="60" placeholder='minutes' onChange={e => setInputMinutes(+e.target.value)} />
+      <input type='number' min="0" max="60" placeholder='seconds' onChange={e => setInputSeconds(+e.target.value)} />
+      <button onClick={() => setNewTime(inputHours * 60 * 60 + inputMinutes * 60 + inputSeconds)}>Start</button>
+      <button onClick={() => setNewTime(null)}>Stop</button>
+    </>
+  )
+}
+
+const TimerContainer = ({ seconds = 1000, refresh = 1000, render: Component }) => {
+  const [time, setTime] = useState(seconds)
+  const [pause, setPause] = useState(false)
+
+  useEffect(() => {
+    let interval = null
+    let t0 = performance.now()
+    if (!pause && time > 0) {
+      interval = setInterval(() => {
+        setTime(time => time - Math.floor((performance.now() - t0)/1000))
+        // console.log(time)
+      }, refresh)
+    } 
+    return () => {
+      clearInterval(interval)
+    }
+   }, [pause, time])
+
+  return (
+    <>
+      <Component seconds={time} />
+      <button disabled={!(time)} onClick={() => setPause(pause => !pause)}>Pause</button>
+    </>
+  )
+}
+
+const Timer = ({ seconds }) => { 
+  const padTime = time => {
+    return String(time).length === 1 ? `0${time}` : `${time}`
+  }
+  
+  const format = time => {
+    const hours = Math.floor(time / 60**2)
+    const minutes =  Math.floor(time / 60) % 60
+    const seconds = time % 60
+
+    return `${hours}:${padTime(minutes)}:${padTime(seconds)}`
+  }
+
+  return (
+    <>
+      <h1>Timer</h1>
+      {seconds >= 0 && <span>{format(seconds)}</span>}
+    </>
+  )
+}
+
+function App() {
+  return (
+    <div className="App">
+      <TimerControl />
+    </div>
+  );
+}
+
+export default App;
+
