@@ -60,13 +60,23 @@ export const actionAllAds = () =>
 export const actionAdById = (_id) => 
     actionPromise('adById', gql(`query adById($query: String){
         AdFindOne(query:$query){
-            title, 
-            description,
-            price,
+            _id,
+            owner {
+              login
+            },
             images {
               url
-            }
-				}
+            },
+            comments {
+              text
+            },
+            createdAt,
+            title, 
+            description,
+            tags,
+            address,
+            price,
+			}
         }`,
         {query: JSON.stringify([
             { _id },

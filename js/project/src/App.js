@@ -1,10 +1,15 @@
 import { useState, useEffect } from 'react';
-import logo from './logo.svg';
+import logo from './logo.png';
+import noImg from './no-img.png';
 import './App.scss';
 import store from './reducers';
 import { Provider, connect } from 'react-redux';
 import { Router, Route, Link, Redirect, Switch } from 'react-router-dom';
 import { createBrowserHistory } from "history";
+
+import { actionFullLogin } from "./actions"
+import { actionFullRegister } from "./actions"
+import { actionAdById } from "./actions"
 // import {actionSearch } from './actions';
 
 const history = createBrowserHistory()
@@ -108,30 +113,36 @@ const history = createBrowserHistory()
 
 const Logo = () =>
 <Link to="/" >
-    <img src={logo} className="Logo" alt="logo" />
+    <div><img src={logo} className="Logo" alt="logo" /></div>
 </Link>
 
 const Header = () =>
-<header>
-    <Logo /> 
-    <Link to="/login" >
-        <button>Login</button>
-    </Link>
-    <Link to="/registration" >
-        <button>Registration</button>
-    </Link>
+  <header>
+    <div>
+      <Logo /> 
+    </div>
+    <div className='logReg'>
+      <Link to="/login" >
+          <button>Login</button>
+      </Link>
+      <Link to="/registration" >
+          <button>Registration</button>
+      </Link>
+    </div>
  </header>
 
 const Ad = ({ _id, title, images, description, owner }) =>
   <li>
-    <Link to={`/ad/${_id}`}>
-      <div className='adsMainPage'>
-        {images && images[0] && images[0].url && <img src={'http://marketplace.asmer.fs.a-level.com.ua/' + images[0].url} />}
-        <h2>{owner.login}</h2>
-        <h3>{title}</h3>
-        <span>{description}</span>
+      <Link to={`/ad/${_id}`}>
+        {images && images[0] && images[0].url ? <img src={'http://marketplace.asmer.fs.a-level.com.ua/' + images[0].url} alt='adImg' /> : <img src={noImg} alt='noImg' />}
+      </Link>
+      <div>
+        <Link to={`/ad/${_id}`}>
+            <h3>{title ? title : "unnamed"}</h3>
+        </Link>
+        {/* <span>{description ? description : "description none"}</span> */}
+        <h4>Автор: {owner.login}</h4>
       </div>
-    </Link>
   </li>
 
 const AllAds = ({ ads }) =>
@@ -143,10 +154,79 @@ const CAllAds = connect(state => ({ads: state.promiseReducer.allAds?.payload || 
 
 const PageMain = () => 
     <>
-      <h1>Главная страница</h1>
+      <h1>Объявления</h1>
       <CAllAds />
     </>
-    
+
+
+const AdPage = ({ match: { params: { _id } }, getData}) => { 
+    useEffect(() => {
+        getData(_id)
+    }, [_id])
+    return (
+        <>
+            <СAdPageCard />
+        </>
+    )
+}
+
+const CAdPage = connect(null, { getData: actionAdById })(AdPage)
+
+const AdPageCard = ({ ad: { _id, title, images, description, price, owner, createdAt, address, tags, comments } }) => 
+    <div className='adPage'>
+      <div>
+        {images && images[0] && images[0].url ? <img src={'http://marketplace.asmer.fs.a-level.com.ua/' + images[0].url} alt='adImg' /> : <img src={noImg} alt='noImg' />}
+      </div>
+      <div>
+        <h3>{title ? title : "Unnamed"}</h3>
+        <p><strong>Price: </strong>{price ? price : "No price"}</p>
+        <p><strong>ID: </strong>{_id}</p>
+        <p><strong>Description: </strong>{description ? description : "Description none"}</p>
+        <p><strong>Created: </strong>{new Date(Number(createdAt)).toLocaleDateString("en-US")}</p>
+        <p><strong>Address: </strong>{address ? address : "No address"}</p>
+        {/* <p>{tags}</p> */}
+        {/* <h6>{owner.login}</h6> */}
+        {/* <p>{comments}</p> */}
+      </div>
+      </div>
+         
+
+const СAdPageCard = connect(state => ({ad: state.promiseReducer.adById?.payload || []}))(AdPageCard)
+
+const LoginForm = ({onLogin}) => { 
+    const [login, setLogin] = useState('')
+    const [password, setPassword] = useState('')
+
+    return (
+        <>
+            <input type="text" style={{ backgroundColor: login ? '' : 'red' }} value={login} onChange={e => setLogin(e.target.value)}/>
+            <input type="text" style={{ backgroundColor: password ? '' : 'red' }} value={password} onChange={e => setPassword(e.target.value)}/>
+            <button disabled={!(login && password)} onClick={ () => onLogin(login, password)}>Login</button>
+        </>
+    )
+}
+
+const CLoginForm = connect(null, { onLogin: actionFullLogin })(LoginForm)
+
+
+const RegistrationForm = ({onReg}) => { 
+    const [login, setLogin] = useState('')
+    const [password, setPassword] = useState('')
+
+    return (
+        <>
+            <input type="text" style={{ backgroundColor: login ? '' : 'red' }} value={login} onChange={e => setLogin(e.target.value)}/>
+            <input type="text" style={{ backgroundColor: password ? '' : 'red' }} value={password} onChange={e => setPassword(e.target.value)}/>
+            <button disabled={!(login && password)} onClick={ () => onReg(login, password)}>Registration</button>
+        </>
+    )
+}
+
+const CRegistrationForm = connect(null, { onReg: actionFullRegister })(RegistrationForm)
+
+
+
+
 
 const Page404 = () => 
     <h1>404</h1>
@@ -156,6 +236,9 @@ const Main = () =>
         <Switch>
             <Redirect from="/main" to="/" />
             <Route path="/" component={PageMain} exact />
+            <Route path="/ad/:_id" component={CAdPage} />
+            <Route path="/login" component={CLoginForm} />
+            <Route path="/registration" component={CRegistrationForm} />
             <Route path="*" component={Page404} />
         </Switch>
 </main>
