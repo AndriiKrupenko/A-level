@@ -51,6 +51,8 @@ const reducers = {
 let store = createStore(combineReducers(reducers), applyMiddleware(thunk))
 
 store.subscribe(() => console.log(store.getState()))
-store.dispatch(actionAllAds())
+localStorage.authToken && store.dispatch(actionAllAds())
+
+
 
 export default store
