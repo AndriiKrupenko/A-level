@@ -1,3 +1,5 @@
+import { historyPush } from '../App'
+
 const getGQL = url =>
     (query, variables = {}) =>
         fetch(url, {
@@ -15,10 +17,8 @@ const getGQL = url =>
                         throw new Error(JSON.stringify(data.errors))
                     return data.data[Object.keys(data.data)[0]]
                 })
-
-const backURL = 'http://marketplace.asmer.fs.a-level.com.ua'
     
-const gql = getGQL(`${backURL}/graphql`)
+const gql = getGQL(`/graphql`)
 
 // export const actionSearch = text => ({type: 'SEARCH', text})
 // export const actionSearchResult = payload => ({type: 'SEARCH_RESULT', payload})
@@ -41,6 +41,45 @@ export const actionPromise = (name, promise) => {
         }
     }
 }
+
+export const actionUploadFile = (file) => {
+    let fd = new FormData
+    fd.append('photo', file)
+    return actionPromise('photo', fetch('/upload', {
+            method: 'POST',
+            headers: localStorage.authToken ? { "Authorization": "Bearer " + localStorage.authToken } : {},
+            body: fd
+    }).then(res => res.json()))
+}
+
+export const actionSetAvatar = file =>
+    async (dispatch, getState) => { 
+        let { _id } = await dispatch(actionUploadFile(file))
+        let state = getState()
+        let myId = state.authReducer.payload.sub.id
+        return actionPromise('setAvatar', gql(`mutation setAvatar{
+            UserUpsert(user:{_id: $myId, avatar: {_id: $_id}}){
+                _id, avatar{
+                    _id
+                }
+            }
+        }`, { myId, _id}))
+    }
+
+export const actionAboutMe = () =>
+    async (dispatch, getState) => { 
+        let state = getState()
+        let myId = state.authReducer.payload.sub.id
+        return dispatch(actionPromise('aboutMe', gql(`query userById($query: String){
+            UserFindOne(query:$query){
+                login,
+                avatar {
+                    _id
+                }
+            }
+        }`, { myId })))
+    } 
+
 
 export const actionAllAds = () => 
     actionPromise('allAds', gql(`query ads{
@@ -113,6 +152,9 @@ export const actionFullLogin = (login, password) =>
         let token = await dispatch(actionLogin(login, password))
         if (token){
             dispatch(actionAuthLogin(token))
+            dispatch(actionAllAds())
+            dispatch(actionAboutMe())
+            historyPush('/')
         }
     }
 
@@ -131,7 +173,10 @@ export const actionFullRegister = (login, password) =>
         if (user) {
             let token = await dispatch(actionLogin(login, password))
             if (token){
-            dispatch(actionAuthLogin(token))
+                dispatch(actionAuthLogin(token))
+                dispatch(actionAllAds())
+                dispatch(actionAboutMe())
+                historyPush('/')
             }
         }   
     }

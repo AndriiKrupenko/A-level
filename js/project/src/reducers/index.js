@@ -1,6 +1,6 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import { actionAllAds } from "../actions"
+import { actionAllAds, actionAboutMe } from "../actions"
 
 function jwtDecode(token) {
     try {
@@ -52,7 +52,6 @@ let store = createStore(combineReducers(reducers), applyMiddleware(thunk))
 
 store.subscribe(() => console.log(store.getState()))
 localStorage.authToken && store.dispatch(actionAllAds())
-
-
+localStorage.authToken && store.dispatch(actionAboutMe())
 
 export default store
