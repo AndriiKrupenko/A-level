@@ -5,17 +5,19 @@ import CRegistrationForm from '../RegistrationForm';
 import CAllAds from '../AllAds';
 import CAdPage from '../AdPage';
 
+import { Container, Typography } from '@mui/material';
+
 const PageMain = () => 
-    <>
-      <h1>Объявления</h1>
-      <CAllAds />
-    </>
+  <>
+    <Typography sx={{textAlign: "center", pt: "1rem", pb: "1rem"}} variant='h4'>Объявления</Typography>
+    <CAllAds />
+  </>
 
 const Page404 = () => 
-  <h1>404</h1>
+  <Typography sx={{textAlign: "center", pt: "1rem", pb: "1rem"}} variant='h4'>404</Typography>
 
 const Main = (token) => 
-<main>
+<Container sx={{ pt: '10vh', minHeight: '86.1vh' }}>
     <Switch>
         <Route path="/registration" component={CRegistrationForm} />
         <Route path="/login" component={CLoginForm} />
@@ -25,7 +27,7 @@ const Main = (token) =>
         <Route path="/ad/:_id" component={CAdPage} />
         <Route path="*" component={Page404} />
     </Switch>
-</main>
+</Container>
 
 const СMain = connect(state => ({token: state.authReducer.token}))(Main)
 

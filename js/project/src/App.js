@@ -19,7 +19,7 @@ export const historyPush = (url) => history.push(url)
 
 export const Logo = () =>
 <Link to="/" >
-    <div><img src={logo} className="Logo" alt="logo" /></div>
+    <img src={logo} className="Logo" alt="logo" />
 </Link>
 
 function App() {

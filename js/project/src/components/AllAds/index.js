@@ -1,26 +1,32 @@
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Grid, Card, CardMedia, CardContent, Typography, CardActions, Button } from '@mui/material';
 
 import noImg from '../../no-img.png';
 
 const Ad = ({ _id, title, images, description, owner }) =>
-  <li>
+  <Grid item xs={12} md={3}>
+    <Card sx={{ height: "100%", borderRadius: 3 }}>
       <Link to={`/ad/${_id}`}>
-        {images && images[0] && images[0].url ? <img src={'/' + images[0].url} alt='adImg' /> : <img src={noImg} alt='noImg' />}
+        {images && images[0] && images[0].url ? <CardMedia component="img" sx={{height: 200}} image={'/' + images[0].url} alt='adImg' /> : <CardMedia component="img" sx={{height: 200}} image={noImg} alt='noImg' />}
       </Link>
-      <div>
-        <Link to={`/ad/${_id}`}>
-            <h3>{title ? title : "unnamed"}</h3>
-        </Link>
+      <CardContent>
+        <Typography variant='h6'>{title ? title : "unnamed"}</Typography>
         {/* <span>{description ? description : "description none"}</span> */}
-        <h4>Автор: {owner.login}</h4>
-      </div>
-  </li>
+        <Typography variant='body1'>Автор: {owner.login}</Typography>
+      </CardContent>
+      <CardActions>
+        <Link style={{ textDecoration: 'none' }} to={`/ad/${_id}`}>
+          <Button sx={{ bgcolor: '#4b0082', "&:hover": {bgcolor: '#4b0082', opacity: '0.7'} }} variant='contained'>Подробнее...</Button>
+        </Link>
+      </CardActions>
+    </Card>
+  </Grid>
 
 const AllAds = ({ ads }) =>
-  <ul>
+  <Grid container spacing={3}>
     {ads.map((item) => <Ad {...item} key={Math.random()}/> )}
-  </ul>
+  </Grid>
 
 const CAllAds = connect(state => ({ads: state.promiseReducer.allAds?.payload || []}))(AllAds)
 
