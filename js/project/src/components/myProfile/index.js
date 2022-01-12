@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-import { actionAdById } from '../../actions';
 import { connect } from 'react-redux';
 import CMyDropzone from '../DropeZone';
 
@@ -7,7 +5,7 @@ import noImg from '../../no-img.png';
 
 import { Box, Container, Typography, Divider } from '@mui/material';
 
-const MyProfile = ({ me: { _id, createdAt, login, nick, avatar, incomings, phones,  addresses } }) => 
+const MyProfile = ({ me: { _id, login, nick, avatar, createdAt, incomings, phones,  addresses } }) => 
   <Container sx={{display: 'flex', pt: '3vh'}}>
       <Box sx={{ width: '50%', textAlign: 'center' }}>
         {avatar && avatar.url ? <img style={{maxWidth: '100%', maxHeight: '70vh', borderRadius: '10px'}} src={'/' + avatar.url} alt='adImg' /> : <img style={{maxWidth: '100%', maxHeight: '70vh', borderRadius: '10px'}} src={noImg} alt='noImg' />}
@@ -17,6 +15,8 @@ const MyProfile = ({ me: { _id, createdAt, login, nick, avatar, incomings, phone
         <Typography variant='h3' sx={{pb: '1rem'}}>{nick ? nick : "Unnamed"}</Typography>
         <Divider />
         <Typography variant='body1' paragraph={true} sx={{pt: '1rem'}}><strong>ID: </strong>{_id}</Typography>
+        <Typography variant='body1' paragraph={true}><strong>Login: </strong>{login}</Typography>
+        <Typography variant='body1' paragraph={true}><strong>Nick: </strong>{nick}</Typography>
         <Typography variant='body2' paragraph={true}><strong>Created: </strong>{new Date(Number(createdAt)).toLocaleDateString("en-US")}</Typography>
         {/* <p>{incomings}</p> */}
         {/* <h6>{phones}</h6> */}

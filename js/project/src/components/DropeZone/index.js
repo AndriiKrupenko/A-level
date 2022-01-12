@@ -1,7 +1,8 @@
 import React, {useCallback} from 'react'
 import { useDropzone } from 'react-dropzone'
-import { actionUploadFile } from "../../actions"
+// import { actionUploadFile } from "../../actions"
 import { connect } from 'react-redux';
+import { actionSetAvatar } from '../../actions';
 
 
 function MyDropzone({ onLoad }) {
@@ -27,6 +28,6 @@ function MyDropzone({ onLoad }) {
   )
 }
 
-const CMyDropzone = connect(null, {onLoad: actionUploadFile})(MyDropzone)
+const CMyDropzone = connect(null, {onLoad: actionSetAvatar})(MyDropzone)
         
 export default CMyDropzone

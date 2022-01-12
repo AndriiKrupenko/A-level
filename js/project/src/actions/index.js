@@ -1,4 +1,4 @@
-import { historyPush } from '../App'
+import { history } from '../App';
 
 const getGQL = url =>
     (query, variables = {}) =>
@@ -57,27 +57,32 @@ export const actionSetAvatar = file =>
         let { _id } = await dispatch(actionUploadFile(file))
         let state = getState()
         let myId = state.authReducer.payload.sub.id
-        return actionPromise('setAvatar', gql(`mutation setAvatar{
+        await dispatch(actionPromise('setAvatar', gql(`mutation setAvatar($myId: String, $_id: ID){
             UserUpsert(user:{_id: $myId, avatar: {_id: $_id}}){
                 _id, avatar{
                     _id
                 }
             }
-        }`, { myId, _id}))
+        }`, { myId, _id })))
+        return dispatch(actionAboutMe())
     }
 
 export const actionAboutMe = () =>
     async (dispatch, getState) => { 
-        let state = await getState()
+        let state = getState()
         let myId = state.authReducer.payload.sub.id
         return dispatch(actionPromise('aboutMe', gql(`query aboutMe($query: String){
             UserFindOne(query:$query){
+                _id,
                 login,
+                nick,
                 avatar {
-                    _id
-                }
+                    _id,
+                    url
+                },
+                createdAt,
             }
-        }`, { query: JSON.stringify([{ myId }])  })))
+        }`, { query: JSON.stringify([{ _id: myId }])  })))
     } 
 
 
@@ -155,7 +160,7 @@ export const actionFullLogin = (login, password) =>
             dispatch(actionAuthLogin(token))
             dispatch(actionAllAds())
             dispatch(actionAboutMe())
-            historyPush('/')
+            history.push('/')
         }
     }
 
@@ -177,7 +182,7 @@ export const actionFullRegister = (login, password) =>
                 dispatch(actionAuthLogin(token))
                 dispatch(actionAllAds())
                 dispatch(actionAboutMe())
-                historyPush('/')
+                history.push('/')
             }
         }   
     }

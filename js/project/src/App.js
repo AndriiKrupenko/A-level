@@ -12,9 +12,7 @@ import './App.scss';
 
 // import {actionSearch } from './actions';
 
-const history = createBrowserHistory()
-
-export const historyPush = (url) => history.push(url)
+export const history = createBrowserHistory()
 
 export const Logo = () =>
 <Link to="/" >

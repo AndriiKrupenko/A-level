@@ -4,7 +4,9 @@ import store from '../../reducers';
 import { actionAuthLogout } from '../../actions';
 
 import { Box, Button, Avatar, Menu, MenuItem, ListItemIcon, Divider, IconButton, Typography, Tooltip } from '@mui/material';
-import { Logout, AccountCircle }  from '@mui/icons-material';
+import { Logout, AccountCircle } from '@mui/icons-material';
+
+let state = store.getState()
 
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -22,8 +24,8 @@ export default function AccountMenu() {
         <Tooltip title="Account settings">
           <IconButton
             onClick={handleClick}
-            size="small"
-            sx={{ ml: 2 }}
+            size="large"
+            color="inherit"
             aria-controls={open ? 'account-menu' : undefined}
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
@@ -44,7 +46,7 @@ export default function AccountMenu() {
             minWidth: '30vh',
             overflow: 'visible',
             filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-            mt: 1.5,
+            mt: 0.5,
             '& .MuiAvatar-root': {
               width: 32,
               height: 32,
@@ -56,7 +58,7 @@ export default function AccountMenu() {
               display: 'block',
               position: 'absolute',
               top: 0,
-              right: 14,
+              right: 22,
               width: 10,
               height: 10,
               bgcolor: 'background.paper',
@@ -68,24 +70,24 @@ export default function AccountMenu() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
-        <Link style={{ textDecoration: 'none', color: 'inherit' }} to="/profile/:_id" >
-          <MenuItem>
+        <Link style={{ textDecoration: 'none', color: 'inherit' }} to={`/profile/${state.authReducer.payload.sub.id}`}>
+          <MenuItem  sx={{ mb: "0.5rem"}}>
             <Avatar />
             <Typography>Profile</Typography>
           </MenuItem>
         </Link> 
         <Divider />
-        <MenuItem>
+        <MenuItem sx={{ mt: "0.5rem", pt: "0.5rem", pb: "0.5rem"}}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
           <Typography onClick={() => store.dispatch(actionAuthLogout())}>Logout</Typography>
         </MenuItem>
-      </Menu></> : <><Link to="/login" >
-        <Button>Login</Button>
+      </Menu></> : <><Link  style={{ textDecoration: 'none', color: 'inherit' }} to="/login" >
+        <Button sx={{ ml: '10px', mr: '5px', color: '#4b0082', bgcolor: '#fff', "&:hover": {bgcolor: '#9c27b0', color: '#fff'} }}  variant='contained'>Login</Button>
       </Link>
-      <Link to="/registration" >
-        <Button>Registration</Button>
+      <Link style={{ textDecoration: 'none', color: 'inherit' }} to="/registration" >
+        <Button sx={{ ml: '5px', color: '#4b0082', bgcolor: '#fff', "&:hover": {bgcolor: '#9c27b0', color: '#fff'} }} variant='contained'>Registration</Button>
       </Link></>
       }
     </>

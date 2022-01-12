@@ -22,7 +22,7 @@ const Main = (token) =>
     <Switch>
         <Route path="/registration" component={CRegistrationForm} />
         <Route path="/login" component={CLoginForm} />
-        {!localStorage.authToken && <Redirect from="/" to="/login" />} 
+        {!localStorage.authToken && <Redirect to="/login" />} 
         <Redirect from="/main" to="/" />
         <Route path="/" component={PageMain} exact />
         <Route path="/ad/:_id" component={CAdPage} />
