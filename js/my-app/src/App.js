@@ -287,7 +287,29 @@ const actionCartClear = (good, count = 1) => ({ type: 'CART_CLEAR', good, count 
 
 
 
-const store = createStore(combineReducers({promise: promiseReducer, auth: authReducer, cart: cartReducer}), applyMiddleware(thunk))
+//---------------for-localStoredReducer-----------------------------------------------------------
+const localStoredReducer = (reducer, localStorageName) => 
+    (state, action) => { 
+        let newState;
+        if ((state === undefined) && localStorage[localStorageName]) {
+            newState = JSON.parse(localStorage[localStorageName])
+        } else { 
+            newState = reducer(state, action)
+        }
+
+        localStorage[localStorageName] = JSON.stringify(newState)
+
+        return newState
+    }
+
+    // localStorage[localStorageName]
+
+
+//---------------for-localStoredReducer-end-------------------------------------------------------
+
+
+
+const store = createStore(combineReducers({promise: promiseReducer, auth: authReducer, cart: localStoredReducer(cartReducer, 'cart')}), applyMiddleware(thunk))
 
 store.subscribe(() => console.log(store.getState()))
 store.dispatch(actionRootCats())
