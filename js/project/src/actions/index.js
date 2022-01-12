@@ -68,16 +68,16 @@ export const actionSetAvatar = file =>
 
 export const actionAboutMe = () =>
     async (dispatch, getState) => { 
-        let state = getState()
+        let state = await getState()
         let myId = state.authReducer.payload.sub.id
-        return dispatch(actionPromise('aboutMe', gql(`query userById($query: String){
+        return dispatch(actionPromise('aboutMe', gql(`query aboutMe($query: String){
             UserFindOne(query:$query){
                 login,
                 avatar {
                     _id
                 }
             }
-        }`, { myId })))
+        }`, { query: JSON.stringify([{ myId }])  })))
     } 
 
 
@@ -131,6 +131,7 @@ export const actionUserById = (_id) =>
         }`,
         {query: JSON.stringify([{ _id }])}
     ))
+
 //---------------for-promiseReducer-end----------------------------------------------------------
 
 

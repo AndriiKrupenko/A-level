@@ -13,11 +13,11 @@ const Ad = ({ _id, title, images, description, owner }) =>
       <CardContent>
         <Typography variant='h6'>{title ? title : "unnamed"}</Typography>
         {/* <span>{description ? description : "description none"}</span> */}
-        <Typography variant='body1'>Автор: {owner.login}</Typography>
+        <Typography variant='body2'>Автор: {owner.login}</Typography>
       </CardContent>
       <CardActions>
         <Link style={{ textDecoration: 'none' }} to={`/ad/${_id}`}>
-          <Button sx={{ bgcolor: '#4b0082', "&:hover": {bgcolor: '#4b0082', opacity: '0.7'} }} variant='contained'>Подробнее...</Button>
+          <Button sx={{ bgcolor: '#4b0082', "&:hover": {bgcolor: '#4b0082', opacity: '0.7'}, ml: '5px', mb: '5px' }} variant='contained'>Подробнее...</Button>
         </Link>
       </CardActions>
     </Card>

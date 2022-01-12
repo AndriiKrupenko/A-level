@@ -2,7 +2,6 @@ import store from './reducers';
 import { Provider } from 'react-redux';
 import { Router, Link } from 'react-router-dom';
 import { createBrowserHistory } from "history";
-import CMyDropzone from './components/DropeZone';
 import СHeader from './components/Header';
 import CMain from './components/Main';
 import Footer from './components/Footer';
@@ -29,7 +28,6 @@ function App() {
         <div className="App">
           <СHeader />
           <CMain />
-          <CMyDropzone />
           <Footer />
         </div>
       </Provider>
