@@ -21,7 +21,7 @@ export default function AccountMenu() {
     <>
       {localStorage.authToken ? <>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-        <Tooltip title="Account settings">
+        <Tooltip title="Настройки аккаунта">
           <IconButton
             onClick={handleClick}
             size="large"
@@ -73,7 +73,7 @@ export default function AccountMenu() {
         <Link style={{ textDecoration: 'none', color: 'inherit' }} to={`/profile/${state.authReducer.payload.sub.id}`}>
           <MenuItem  sx={{ mb: "0.5rem"}}>
             <Avatar />
-            <Typography>Profile</Typography>
+            <Typography>Профиль</Typography>
           </MenuItem>
         </Link> 
         <Divider />
@@ -81,13 +81,13 @@ export default function AccountMenu() {
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
-          <Typography onClick={() => store.dispatch(actionAuthLogout())}>Logout</Typography>
+          <Typography onClick={() => store.dispatch(actionAuthLogout())}>Выйти</Typography>
         </MenuItem>
       </Menu></> : <><Link  style={{ textDecoration: 'none', color: 'inherit' }} to="/login" >
-        <Button sx={{ ml: '10px', mr: '5px', color: '#4b0082', bgcolor: '#fff', "&:hover": {bgcolor: '#9c27b0', color: '#fff'} }}  variant='contained'>Login</Button>
+        <Button sx={{ ml: '10px', mr: '5px', color: '#4b0082', bgcolor: '#fff', "&:hover": {bgcolor: '#9c27b0', color: '#fff'} }}  variant='contained'>Войти</Button>
       </Link>
       <Link style={{ textDecoration: 'none', color: 'inherit' }} to="/registration" >
-        <Button sx={{ ml: '5px', color: '#4b0082', bgcolor: '#fff', "&:hover": {bgcolor: '#9c27b0', color: '#fff'} }} variant='contained'>Registration</Button>
+        <Button sx={{ ml: '5px', color: '#4b0082', bgcolor: '#fff', "&:hover": {bgcolor: '#9c27b0', color: '#fff'} }} variant='contained'>Регистрация</Button>
       </Link></>
       }
     </>

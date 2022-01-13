@@ -4,7 +4,8 @@ import CLoginForm from '../LoginForm';
 import CRegistrationForm from '../RegistrationForm';
 import CAllAds from '../AllAds';
 import CAdPage from '../AdPage';
-import CMyProfile from '../myProfile'
+import CMyProfile from '../myProfile';
+import CFavorite from '../Favorite';
 
 import { Container, Typography } from '@mui/material';
 
@@ -26,6 +27,7 @@ const Main = (token) =>
         <Redirect from="/main" to="/" />
         <Route path="/" component={PageMain} exact />
         <Route path="/ad/:_id" component={CAdPage} />
+        <Route path="/favorite" component={CFavorite} />
         <Route path="/profile/:_id" component={CMyProfile} />
         <Route path="*" component={Page404} />
     </Switch>

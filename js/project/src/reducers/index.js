@@ -14,17 +14,32 @@ function jwtDecode(token) {
     }
 }
 
-const reducers = {
-    promiseReducer(state={}, {type, name, status, payload, error}){
+const localStoredReducer = (reducer, localStorageName) => 
+    (state, action) => { 
+        let newState;
+        if ((state === undefined) && localStorage[localStorageName]) {
+            newState = JSON.parse(localStorage[localStorageName])
+        } else { 
+            newState = reducer(state, action)
+        }
+
+        localStorage[localStorageName] = JSON.stringify(newState)
+
+        return newState
+    }
+
+function promiseReducer(state={}, {type, name, status, payload, error}){
         if (type === 'PROMISE'){
             return {
-                ...state,
-                [name]:{status, payload, error}
+                // ...state,
+                // [name]: { status, payload, error }
+                ...state, [name]: {status, payload: (status === 'PENDING' && state[name] && state[name].payload) || payload, error}
             }
         }
         return state
-    },
-    authReducer(state, {type, token}){
+    }
+    
+function authReducer(state, {type, token}){
         if (!state) {
             if (localStorage.authToken) {
                 type = 'AUTH_LOGIN'
@@ -45,10 +60,40 @@ const reducers = {
             return {}
         }
         return state
-    },
+    }
+
+function favoriteReducer(state = {}, { type, ad={} }){
+    const {_id } = ad
+    const types = {
+        FAVORITE_ADD() {
+            return {
+                ...state,
+                [_id]: ad
+            }
+        },
+        FAVORITE_REMOVE(){ 
+            let newState = { ...state }
+            delete newState[_id]
+            return {
+                ...newState
+            }            
+        },
+        // FAVORITE_CLEAR(){
+        //     return {}
+        // },
+    }
+
+    if (type in types)
+        return types[type]()
+
+    return state
 }
 
-let store = createStore(combineReducers(reducers), applyMiddleware(thunk))
+const store = createStore(combineReducers({ promiseReducer: localStoredReducer(promiseReducer, 'forPromiseReducer'), authReducer: authReducer, favoriteReducer: localStoredReducer(favoriteReducer, 'favorite') }), applyMiddleware(thunk))
+
+// const store = createStore(combineReducers({ promiseReducer: promiseReducer, authReducer: authReducer, favoriteReducer: localStoredReducer(favoriteReducer, 'favorite') }), applyMiddleware(thunk))
+
+// const store = createStore(combineReducers({promiseReducer: promiseReducer, authReducer: authReducer, favoriteReducer: favoriteReducer}), applyMiddleware(thunk))
 
 store.subscribe(() => console.log(store.getState()))
 localStorage.authToken && store.dispatch(actionAllAds())

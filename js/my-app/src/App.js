@@ -305,7 +305,7 @@ const localStoredReducer = (reducer, localStorageName) =>
     // localStorage[localStorageName]
 
 
-//---------------for-localStoredReducer-end-------------------------------------------------------
+//---------------for-localStoredReducer-end--------------------------------------------------------
 
 
 

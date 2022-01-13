@@ -97,7 +97,8 @@ export const actionAllAds = () =>
                 url
             },
             title,
-            description
+            description,
+            price
         }
     }`))
 
@@ -188,3 +189,10 @@ export const actionFullRegister = (login, password) =>
     }
 //---------------for-authReducer-end-------------------------------------------------------------
 
+
+
+//---------------for-favoriteReducer-------------------------------------------------------------
+export const actionFavoriteAdd = (ad) => ({ type: 'FAVORITE_ADD', ad })
+export const actionFavoriteRemove = (ad) => ({ type: 'FAVORITE_REMOVE', ad })
+// export const actionFavoriteClear = (ad) => ({ type: 'FAVORITE_CLEAR', ad })
+//---------------for-favoriteReducer-end---------------------------------------------------------

@@ -20,13 +20,12 @@ const LoginForm = ({ onLogin }) => {
           noValidate
           autoComplete="off"
         >
-            <Typography variant='h5'>Login Form</Typography>
+            <Typography variant='h5'>Войдите в аккаунт</Typography>
             <TextField 
               required
               type="text"
               id="login"
-              label="Login"
-              // defaultValue="Hello World"
+              label="Логин"
               value={login}
               onChange={e => setLogin(e.target.value)} 
             />
@@ -34,14 +33,13 @@ const LoginForm = ({ onLogin }) => {
               required 
               id="pass"
               type='password'
-              label="Password"
-              // defaultValue="Hello World"
+              label="Пароль"
               value={password}
               onChange={e => setPassword(e.target.value)} 
             />
-              <Button sx={{ mt: '1rem', mr: '0.5rem', color: '#fff', bgcolor: '#4b0082', "&:hover": {bgcolor: '#9c27b0', color: '#fff'} }} variant='contained' disabled={!(login && password)} onClick={() => {onLogin(login, password)}}>Login</Button>&nbsp;
+              <Button sx={{ mt: '1rem', mr: '0.5rem', color: '#fff', bgcolor: '#4b0082', "&:hover": {bgcolor: '#9c27b0', color: '#fff'} }} variant='contained' disabled={!(login && password)} onClick={() => {onLogin(login, password)}}>Войти</Button>&nbsp;
               <Link style={{ textDecoration: 'none', color: 'inherit' }} to="/registration" >
-                <Button sx={{ mt: '1rem', color: '#fff', bgcolor: '#4b0082', "&:hover": {bgcolor: '#9c27b0', color: '#fff'} }} variant='contained'>Registration &gt;&gt;</Button>
+                <Button sx={{ mt: '1rem', color: '#fff', bgcolor: '#4b0082', "&:hover": {bgcolor: '#9c27b0', color: '#fff'} }} variant='contained'>Регистрация &gt;&gt;</Button>
               </Link>
             
         </Box>
