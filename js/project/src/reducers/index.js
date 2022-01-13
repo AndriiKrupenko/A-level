@@ -31,8 +31,6 @@ const localStoredReducer = (reducer, localStorageName) =>
 function promiseReducer(state={}, {type, name, status, payload, error}){
         if (type === 'PROMISE'){
             return {
-                // ...state,
-                // [name]: { status, payload, error }
                 ...state, [name]: {status, payload: (status === 'PENDING' && state[name] && state[name].payload) || payload, error}
             }
         }
@@ -90,10 +88,6 @@ function favoriteReducer(state = {}, { type, ad={} }){
 }
 
 const store = createStore(combineReducers({ promiseReducer: localStoredReducer(promiseReducer, 'forPromiseReducer'), authReducer: authReducer, favoriteReducer: localStoredReducer(favoriteReducer, 'favorite') }), applyMiddleware(thunk))
-
-// const store = createStore(combineReducers({ promiseReducer: promiseReducer, authReducer: authReducer, favoriteReducer: localStoredReducer(favoriteReducer, 'favorite') }), applyMiddleware(thunk))
-
-// const store = createStore(combineReducers({promiseReducer: promiseReducer, authReducer: authReducer, favoriteReducer: favoriteReducer}), applyMiddleware(thunk))
 
 store.subscribe(() => console.log(store.getState()))
 localStorage.authToken && store.dispatch(actionAllAds())

@@ -30,7 +30,7 @@ export default function AccountMenu() {
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
-              <AccountCircle sx={{color: "#fff", width: 32, height: 32}} />
+              <AccountCircle sx={{ width: 32, height: 32}} />
           </IconButton>
         </Tooltip>
       </Box>
