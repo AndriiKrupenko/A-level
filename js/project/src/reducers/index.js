@@ -55,6 +55,7 @@ function authReducer(state, {type, token}){
         }
         if (type === 'AUTH_LOGOUT') {
             localStorage.authToken = ''
+            console.log(localStorage.authToken)
             return {}
         }
         return state
