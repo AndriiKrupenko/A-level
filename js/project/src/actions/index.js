@@ -1,4 +1,5 @@
 import { history } from '../App';
+import store from '../reducers';
 
 const getGQL = url =>
     (query, variables = {}) =>
@@ -18,29 +19,17 @@ const getGQL = url =>
                     return data.data[Object.keys(data.data)[0]]
                 })
     
-const gql = getGQL(`/graphql`)
+export const gql = getGQL(`/graphql`)
 
 // export const actionSearch = text => ({type: 'SEARCH', text})
 // export const actionSearchResult = payload => ({type: 'SEARCH_RESULT', payload})
 
 //---------------for-promiseReducer--------------------------------------------------------------
-export const actionPromise = (name, promise) => {
-    const actionPending = name => ({ type: 'PROMISE', status: 'PENDING', name })
-    const actionResolved = (name, payload) => ({ type: 'PROMISE', status: 'RESOLVED', name, payload })
-    const actionRejected = (name, error) => ({ type: 'PROMISE', status: 'REJECTED', name, error })
+export const actionPending = name => ({ type: 'PROMISE', status: 'PENDING', name })
+export const actionResolved = (name, payload) => ({ type: 'PROMISE', status: 'RESOLVED', name, payload })
+export const actionRejected = (name, error) => ({ type: 'PROMISE', status: 'REJECTED', name, error })
 
-    return async dispatch => {
-        dispatch(actionPending(name)) 
-        try {
-            let payload = await promise
-            dispatch(actionResolved(name, payload))
-            return payload
-        }
-        catch (error) {
-            dispatch(actionRejected(name, error))
-        }
-    }
-}
+export const actionPromise = (name, promise) => ({ type: 'PROMISE_START', name, promise })
 
 export const actionUploadFile = (file) => {
     let fd = new FormData
@@ -52,26 +41,10 @@ export const actionUploadFile = (file) => {
     }).then(res => res.json()))
 }
 
-export const actionSetAvatar = file =>
-    async (dispatch, getState) => { 
-        let { _id } = await dispatch(actionUploadFile(file))
-        let state = getState()
-        let myId = state.authReducer.payload.sub.id
-        await dispatch(actionPromise('setAvatar', gql(`mutation setAvatar($myId: String, $_id: ID){
-            UserUpsert(user:{_id: $myId, avatar: {_id: $_id}}){
-                _id, avatar{
-                    _id
-                }
-            }
-        }`, { myId, _id })))
-        return dispatch(actionAboutMe())
-    }
+export const actionSetAvatar = file => ({ type: 'SET_AVATAR', file })
 
 export const actionAboutMe = () =>
-    async (dispatch, getState) => { 
-        let state = getState()
-        let myId = state.authReducer.payload.sub.id
-        return dispatch(actionPromise('aboutMe', gql(`query aboutMe($query: String){
+    actionPromise('aboutMe', gql(`query aboutMe($query: String){
             UserFindOne(query:$query){
                 _id,
                 login,
@@ -82,10 +55,8 @@ export const actionAboutMe = () =>
                 },
                 createdAt,
             }
-        }`, { query: JSON.stringify([{ _id: myId }])  })))
-    } 
-
-
+        }`, { query: JSON.stringify([{ _id: store.getState().authReducer.payload.sub.id }])  }))
+     
 export const actionAllAds = () => 
     actionPromise('allAds', gql(`query ads{
         AdFind(query: "[{}]") {
@@ -154,16 +125,7 @@ export const actionLogin = (login, password) =>
         )
     }`, { login, password }))
 
-export const actionFullLogin = (login, password) =>
-    async dispatch => {
-        let token = await dispatch(actionLogin(login, password))
-        if (token){
-            dispatch(actionAuthLogin(token))
-            dispatch(actionAllAds())
-            dispatch(actionAboutMe())
-            history.push('/')
-        }
-    }
+export const actionFullLogin = (login, password) => ({ type: 'FULL_LOGIN', login, password })
 
 export const actionRegister = (login, password) =>
     actionPromise('reg', gql(`mutation reg($login: String!, $password: String!){
@@ -174,19 +136,8 @@ export const actionRegister = (login, password) =>
             }
     }`, { login, password }))
 
-export const actionFullRegister = (login, password) =>
-    async dispatch => {
-        let user = await dispatch(actionRegister(login, password))
-        if (user) {
-            let token = await dispatch(actionLogin(login, password))
-            if (token){
-                dispatch(actionAuthLogin(token))
-                dispatch(actionAllAds())
-                dispatch(actionAboutMe())
-                history.push('/')
-            }
-        }   
-    }
+export const actionFullRegister = (login, password) => ({ type: 'FULL_REGISTER', login, password })
+
 //---------------for-authReducer-end-------------------------------------------------------------
 
 

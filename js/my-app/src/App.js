@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.scss';
-import thunk from 'redux-thunk';
+// import thunk from 'redux-thunk';
+import createSagaMiddleware from 'redux-saga';
+import { all, put, takeEvery, select, takeLatest, take, call } from 'redux-saga/effects';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider, connect } from 'react-redux';
 import {Router, Route, Link, Redirect, Switch} from 'react-router-dom';
@@ -83,18 +85,21 @@ const actionPending  = name => ({type: 'PROMISE', status: 'PENDING', name})
 const actionResolved = (name, payload) => ({type: 'PROMISE', status: 'RESOLVED', name, payload})
 const actionRejected = (name, error) => ({type: 'PROMISE', status: 'REJECTED', name,  error})
 
-const actionPromise = (name, promise) =>
-    async dispatch => {
-        dispatch(actionPending(name)) // 1. {delay1000: {status: 'PENDING'}}
-        try{
-            let payload = await promise
-            dispatch(actionResolved(name, payload))
-            return payload
-        }
-        catch(error){
-            dispatch(actionRejected(name, error))
-        }
-    }
+// const actionPromise = (name, promise) =>
+//     async dispatch => {
+//         dispatch(actionPending(name)) // 1. {delay1000: {status: 'PENDING'}}
+//         try{
+//             let payload = await promise
+//             dispatch(actionResolved(name, payload))
+//             return payload
+//         }
+//         catch(error){
+//             dispatch(actionRejected(name, error))
+//         }
+//     }
+
+const actionPromise = (name, promise) => ({type: 'PROMISE_START', name, promise})
+    
 
 const actionMyOrders = () =>
     actionPromise('myOrders', gql(`
@@ -204,13 +209,13 @@ const actionLogin = (login, password) =>
 }`, {login, password}))
 
 
-const actionFullLogin = (login, password) =>
-    async dispatch => {
-        let token = await dispatch(actionLogin(login, password))
-        if (token){
-            dispatch(actionAuthLogin(token))
-        }
-    }
+const actionFullLogin = (login, password) => ({type: 'FULL_LOGIN', login, password})
+    // async dispatch => {
+    //     let token = await dispatch(actionLogin(login, password))
+    //     if (token){
+    //         dispatch(actionAuthLogin(token))
+    //     }
+    // }
 
 const actionRegister = (login, password) =>
     actionPromise('reg', gql(`mutation reg($login: String, $password: String){
@@ -307,9 +312,58 @@ const localStoredReducer = (reducer, localStorageName) =>
 
 //---------------for-localStoredReducer-end--------------------------------------------------------
 
+const sagaMiddleware = createSagaMiddleware()
+
+// const store = createStore(combineReducers({ promise: promiseReducer, auth: authReducer, cart: localStoredReducer(cartReducer, 'cart') }), applyMiddleware(thunk))
+
+const store = createStore(combineReducers({ promise: promiseReducer, auth: authReducer, cart: localStoredReducer(cartReducer, 'cart') }), applyMiddleware(sagaMiddleware))
 
 
-const store = createStore(combineReducers({promise: promiseReducer, auth: authReducer, cart: localStoredReducer(cartReducer, 'cart')}), applyMiddleware(thunk))
+function* loginWorker({ login, password }) {
+    
+
+    const token = yield call(promiseWorker, actionLogin(login, password))// начинаем скачку токена
+    // yield take(action => action.type === 'PROMISE' &&
+    //                      action.name === 'login' &&
+    //                      ['RESOLVED', 'REJECTED'].includes(action.status))
+
+    if (token) { 
+        yield put(actionAuthLogin(token))
+    }
+    
+} 
+
+function* promiseWorker(action) {
+    const { type, name, promise } = action
+    console.log(type) //PROMISE_START
+
+    yield put(actionPending(name))
+    try{
+        let payload = yield promise
+        yield put(actionResolved(name, payload))
+        return payload
+    }
+    catch(error){
+        yield put(actionRejected(name, error))
+    }
+}    
+
+function* loginWatcher() { 
+    yield takeEvery('FULL_LOGIN', loginWorker)
+}
+
+function* promiseWatcher() { 
+    yield takeEvery('PROMISE_START', promiseWorker)
+}
+
+function* rootSaga() { 
+    yield all([
+        promiseWatcher(),
+        loginWatcher()
+    ])
+}
+
+sagaMiddleware.run(rootSaga)
 
 store.subscribe(() => console.log(store.getState()))
 store.dispatch(actionRootCats())
@@ -927,8 +981,8 @@ function App() {
   return (
     <Router history={history}>
           <Provider store={store}>
-              <PhoneBook onSave={ppl => console.log(ppl)}/>
-              <Gallery />
+              {/* <PhoneBook onSave={ppl => console.log(ppl)}/>
+              <Gallery /> */}
               <MySelect value={country} onChange={ newCountry => setCountry(newCountry)}/>
             <div className="App">
                 <Header />
