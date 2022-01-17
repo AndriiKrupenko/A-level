@@ -6,13 +6,17 @@ import CAllAds from '../AllAds';
 import CAdPage from '../AdPage';
 import CMyProfile from '../myProfile';
 import CFavorite from '../Favorite';
+import CPromisePreloader from '../PromisePreloader';
+import CSearchPage from '../SearchPage';
 
 import { Container, Typography } from '@mui/material';
 
 const PageMain = () => 
   <>
-    <Typography sx={{textAlign: "center", pt: "1rem", pb: "1rem"}} variant='h4'>Объявления</Typography>
-    <CAllAds />
+    <Typography sx={{ textAlign: "center", pt: "1rem", pb: "1rem" }} variant='h4'>Объявления</Typography>
+    <CPromisePreloader name='allAds'>
+      <CAllAds />
+    </CPromisePreloader>
   </>
 
 const Page404 = () => 
@@ -29,6 +33,7 @@ const Main = (token) =>
         <Route path="/ad/:_id" component={CAdPage} />
         <Route path="/favorite" component={CFavorite} />
         <Route path="/profile/:_id" component={CMyProfile} />
+        <Route path="/search" component={CSearchPage} />
         <Route path="*" component={Page404} />
     </Switch>
 </Container>

@@ -1,4 +1,3 @@
-import { history } from '../App';
 import store from '../reducers';
 
 const getGQL = url =>
@@ -21,7 +20,7 @@ const getGQL = url =>
     
 export const gql = getGQL(`/graphql`)
 
-// export const actionSearch = text => ({type: 'SEARCH', text})
+
 // export const actionSearchResult = payload => ({type: 'SEARCH_RESULT', payload})
 
 //---------------for-promiseReducer--------------------------------------------------------------
@@ -30,6 +29,9 @@ export const actionResolved = (name, payload) => ({ type: 'PROMISE', status: 'RE
 export const actionRejected = (name, error) => ({ type: 'PROMISE', status: 'REJECTED', name, error })
 
 export const actionPromise = (name, promise) => ({ type: 'PROMISE_START', name, promise })
+
+export const actionSearch = text => ({type: 'SEARCH', text})
+export const actionSearchResult = (payload) => ({ type: 'SEARCH_RESULT', payload })
 
 export const actionUploadFile = (file) => {
     let fd = new FormData
@@ -40,6 +42,15 @@ export const actionUploadFile = (file) => {
             body: fd
     }).then(res => res.json()))
 }
+
+export const actionAvatar = (myId, _id) =>
+    actionPromise('setAvatar', gql(`mutation setAvatar($myId: String, $_id: ID){
+             UserUpsert(user:{_id: $myId, avatar: {_id: $_id}}){
+                 _id, avatar{
+                     _id
+                 }
+             }
+         }`, { myId, _id }))
 
 export const actionSetAvatar = file => ({ type: 'SET_AVATAR', file })
 

@@ -2,36 +2,51 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import AccountMenu from '../AccountMenu';
-import MySearch from '../Search';
+import CMySearch from '../Search';
 import { Logo } from '../../App';
 
-import { AppBar, Box, Toolbar, IconButton, Badge, Tooltip } from '@mui/material'
+import { AppBar, Box, Toolbar, IconButton, Badge, Tooltip, Typography } from '@mui/material'
 
 import MailIcon from '@mui/icons-material/Mail';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import AddIcon from '@mui/icons-material/Add';
 
 const Header = ({ token, favorite }) => 
   <AppBar>
     <Toolbar>
       <Logo /> 
-      <MySearch />
+      <CMySearch />
       <Box sx={{ flexGrow: 1 }} />
       {token ? 
         <>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <Tooltip title="Сообщения">
+            <Tooltip title="Подать объявление">
               <IconButton size="large" color="inherit">
-                <Badge badgeContent={4} color="secondary">
-                  <MailIcon sx={{ width: 32, height: 32 }}/>
-                </Badge>
+                <Box sx={{ display: 'flex', alignItems: 'center'}}>
+                  <AddIcon sx={{ width: 32, height: 32 }}/>
+                  <Typography>&nbsp;&nbsp;&nbsp;Подать объявление</Typography>
+                </Box>
               </IconButton>
             </Tooltip>
-            <Tooltip title="Избранные">
+            <Tooltip title="Сообщения">
+              <IconButton size="large" color="inherit">
+                <Box sx={{ display: 'flex', alignItems: 'center'}}>
+                  <Badge badgeContent={4} color="secondary">
+                    <MailIcon sx={{ width: 32, height: 32 }}/>
+                  </Badge>
+                  <Typography>&nbsp;&nbsp;&nbsp;Сообщения</Typography>
+                </Box>
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Избранные объявления">
               <IconButton size="large" color="inherit">
                 <Link style={{ textDecoration: 'none', color: 'inherit' }} to="/favorite" >
-                  <Badge badgeContent={Object.keys(favorite).length} color="secondary">
+                  <Box sx={{ display: 'flex', alignItems: 'center'}}>
+                    <Badge badgeContent={Object.keys(favorite).length} color="secondary">
                       <FavoriteIcon sx={{ width: 32, height: 32 }}/>
                     </Badge>
+                    <Typography>&nbsp;&nbsp;&nbsp;Избранные</Typography>
+                  </Box>
                 </Link>
               </IconButton>
             </Tooltip>

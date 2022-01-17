@@ -1,10 +1,12 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 // import thunk from 'redux-thunk';
 import createSagaMiddleware from 'redux-saga';
-import { all, put, takeEvery, select, takeLatest, take, call } from 'redux-saga/effects';
-import { actionPromise, actionPending, actionResolved, actionRejected, actionLogin, actionAuthLogin, actionRegister, actionUploadFile, actionAllAds, actionAboutMe, gql } from "../actions"
+import { all, put, takeEvery, call, takeLeading, takeLatest } from 'redux-saga/effects';
+import { actionPromise, actionPending, actionResolved, actionRejected, actionLogin, actionAuthLogin, actionRegister, actionUploadFile, actionAvatar, actionAllAds, actionAboutMe, actionSearchResult, gql } from "../actions"
 
 import { history } from '../App';
+
+const delay = ms => new Promise(ok => setTimeout(() => ok(ms), ms))
 
 function jwtDecode(token) {
     try {
@@ -92,23 +94,53 @@ function favoriteReducer(state = {}, { type, ad={} }){
     return state
 }
 
+function searchReducer(state={}, {type, ...params}) {
+    if (type === 'SEARCH_RESULT'){
+        return {searchResult: {...params}}
+    }
+    return state
+}
+
 const sagaMiddleware = createSagaMiddleware()
 
-const store = createStore(combineReducers({ promiseReducer: localStoredReducer(promiseReducer, 'forPromiseReducer'), authReducer: authReducer, favoriteReducer: localStoredReducer(favoriteReducer, 'favorite') }), applyMiddleware(sagaMiddleware))
+const store = createStore(combineReducers({ promiseReducer: localStoredReducer(promiseReducer, 'forPromiseReducer'), authReducer: authReducer, favoriteReducer: localStoredReducer(favoriteReducer, 'favorite'), searchReducer: searchReducer }), applyMiddleware(sagaMiddleware))
+
+
+
+function* searchWorker({ text }) {
+    if (text) { 
+    yield put(actionSearchResult({payload: null})) 
+    yield delay(500) //аналог await
+    let payload = yield gql( `
+            query gf($query: String){
+                AdFind(query: $query){
+                    _id, title, description, price, images{
+                        _id, url
+                    }, owner {login}
+                }
+            }`, {query: JSON.stringify([
+                        {
+                            $or: [{title: `/${text}/`}, {description: `/${text}/`}] 
+                        },
+                        {
+                            sort: [{name: 1}]} 
+                        ])
+            }) 
+    yield put(actionSearchResult({payload})) 
+    // console.log('search end' , text)   
+    } 
+}
+
+function* searchWatcher(){
+    yield takeLatest('SEARCH', searchWorker)
+}
 
 
 
 function* setAvatarWorker({ file }) {
     const { _id } = yield call(promiseWorker, actionUploadFile(file))
     const myId = store.getState().authReducer.payload.sub.id
-    yield put((actionPromise('setAvatar', gql(`mutation setAvatar($myId: String, $_id: ID){
-             UserUpsert(user:{_id: $myId, avatar: {_id: $_id}}){
-                 _id, avatar{
-                     _id
-                 }
-             }
-         }`, { myId, _id }))))
-        
+    yield put(actionAvatar(myId, _id)) 
     yield put(actionAboutMe())  
 } 
 
@@ -178,7 +210,8 @@ function* rootSaga() {
         promiseWatcher(),
         loginWatcher(),
         registerWatcher(),
-        setAvatarWatcher()
+        setAvatarWatcher(),
+        searchWatcher()
     ])
 }
 

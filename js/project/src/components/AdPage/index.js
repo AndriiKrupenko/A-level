@@ -32,7 +32,7 @@ const AdPageCard = ({ ad: { _id, title, images, description, price, owner, creat
       <Typography variant='body1' paragraph={true}><strong>Price: </strong>{price ? price : "No price"}</Typography>
       <Typography variant='body2' paragraph={true}><strong>Created: </strong>{new Date(Number(createdAt)).toLocaleDateString("en-US")}</Typography>
       <Typography variant='body2' paragraph={true}><strong>Address: </strong>{address ? address : "No address"}</Typography>
-      <Typography variant='body2' paragraph={true}><strong>Owner: </strong>{owner.login}</Typography>
+      {/* <Typography variant='body2' paragraph={true}><strong>Owner: </strong>{owner.login}</Typography> */}
         {/* <p>{tags}</p> */}
         {/* <p>{comments}</p> */}
       </Box>

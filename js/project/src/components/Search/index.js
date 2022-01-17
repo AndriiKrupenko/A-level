@@ -1,6 +1,10 @@
+import { connect } from 'react-redux';
+import { useState } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
-import InputBase from '@mui/material/InputBase';
+import { InputBase } from '@mui/material/';
+import { actionSearch } from '../../actions';
+import CSearchResultList from '../SearchResultList/index.js'
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -37,23 +41,33 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('md')]: {
-      width: '40ch',
+      width: '50ch',
     },
   },
 }));
 
-const MySearch = (props) => { 
-    const { onChange, value } = props
+const MySearch = ({ onSearch }) => { 
+  const [inputValue, setInputValue] = useState('')
 
-    return <Search>
+  return (
+      <Search>
           <SearchIconWrapper>
             <SearchIcon />
           </SearchIconWrapper>
           <StyledInputBase
             placeholder="Поиск…"
             inputProps={{ 'aria-label': 'search' }}
+            onChange={e => { 
+              setInputValue(e.target.value)
+              return onSearch(inputValue)
+            }}
+            value={inputValue}
           />
+      <CSearchResultList clearSearchValue={() => setInputValue('')} searchValue={inputValue}/>
       </Search>
+    )
 }
 
-export default MySearch;
+const CMySearch = connect(null, { onSearch: actionSearch })(MySearch)
+
+export default CMySearch;
