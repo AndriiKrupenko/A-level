@@ -30,6 +30,39 @@ export const actionRejected = (name, error) => ({ type: 'PROMISE', status: 'REJE
 
 export const actionPromise = (name, promise) => ({ type: 'PROMISE_START', name, promise })
 
+
+export const actionMyAds = (_id) =>
+    actionPromise('myAds', gql(`query myAds($query: String){
+        AdFind(query: $query) {
+            _id, 
+            owner {
+                login
+            },
+            images {
+                url
+            },
+            title,
+            price
+        }
+    }`, { query: JSON.stringify([{ ___owner: _id }]) }))
+
+
+export const actionNewAd = (title, description, address, price) =>
+    actionPromise('newAd', gql(`mutation newAd($title: String, $description: String, $address: String, $price: Float){
+        AdUpsert(ad: {
+            title:$title, 
+            description: $description,
+            address: $address,
+            price:$price}){
+                    title,
+                    description, 
+                    address,
+                    price, 
+                }
+    }`, {title, description, address, price}))
+
+// { images, title, description, tags, address, price }
+
 export const actionSearch = text => ({type: 'SEARCH', text})
 export const actionSearchResult = (payload) => ({ type: 'SEARCH_RESULT', payload })
 

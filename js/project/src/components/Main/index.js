@@ -8,6 +8,8 @@ import CMyProfile from '../myProfile';
 import CFavorite from '../Favorite';
 import CPromisePreloader from '../PromisePreloader';
 import CSearchPage from '../SearchPage';
+import CNewAd from '../NewAd'
+import CMyAds from '../MyAds'
 
 import { Container, Typography } from '@mui/material';
 
@@ -31,7 +33,9 @@ const Main = (token) =>
         <Redirect from="/main" to="/" />
         <Route path="/" component={PageMain} exact />
         <Route path="/ad/:_id" component={CAdPage} />
+        <Route path="/newad" component={CNewAd} />
         <Route path="/favorite" component={CFavorite} />
+        <Route path="/ads/:_id" component={CMyAds} />
         <Route path="/profile/:_id" component={CMyProfile} />
         <Route path="/search" component={CSearchPage} />
         <Route path="*" component={Page404} />

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import noImg from '../../no-img.png';
 
-import { Box, Container, Button, Avatar, Menu, MenuItem, ListItemIcon, Divider, IconButton, Typography, Tooltip } from '@mui/material';
+import { Box, Container, Divider, Typography } from '@mui/material';
 
 const AdPage = ({ match: { params: { _id } }, getData}) => { 
     useEffect(() => {

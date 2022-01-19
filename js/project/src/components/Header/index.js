@@ -22,13 +22,15 @@ const Header = ({ token, favorite }) =>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <Tooltip title="Подать объявление">
               <IconButton size="large" color="inherit">
-                <Box sx={{ display: 'flex', alignItems: 'center'}}>
-                  <AddIcon sx={{ width: 32, height: 32 }}/>
-                  <Typography>&nbsp;&nbsp;&nbsp;Подать объявление</Typography>
-                </Box>
+                <Link style={{ textDecoration: 'none', color: 'inherit' }} to="/newad" >
+                  <Box sx={{ display: 'flex', alignItems: 'center'}}>
+                    <AddIcon sx={{ width: 32, height: 32 }}/>
+                    <Typography>&nbsp;&nbsp;&nbsp;Создать объявление</Typography>
+                  </Box>
+                </Link>
               </IconButton>
             </Tooltip>
-            <Tooltip title="Сообщения">
+            {/* <Tooltip title="Сообщения">
               <IconButton size="large" color="inherit">
                 <Box sx={{ display: 'flex', alignItems: 'center'}}>
                   <Badge badgeContent={4} color="secondary">
@@ -37,7 +39,7 @@ const Header = ({ token, favorite }) =>
                   <Typography>&nbsp;&nbsp;&nbsp;Сообщения</Typography>
                 </Box>
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
             <Tooltip title="Избранные объявления">
               <IconButton size="large" color="inherit">
                 <Link style={{ textDecoration: 'none', color: 'inherit' }} to="/favorite" >

@@ -1,8 +1,8 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 // import thunk from 'redux-thunk';
 import createSagaMiddleware from 'redux-saga';
-import { all, put, takeEvery, call, takeLeading, takeLatest } from 'redux-saga/effects';
-import { actionPromise, actionPending, actionResolved, actionRejected, actionLogin, actionAuthLogin, actionRegister, actionUploadFile, actionAvatar, actionAllAds, actionAboutMe, actionSearchResult, gql } from "../actions"
+import { all, put, takeEvery, call, takeLatest } from 'redux-saga/effects';
+import { actionPending, actionResolved, actionRejected, actionLogin, actionAuthLogin, actionRegister, actionUploadFile, actionAvatar, actionAllAds, actionAboutMe, actionSearchResult, actionNewAd, actionMyAds, gql } from "../actions"
 
 import { history } from '../App';
 
@@ -219,6 +219,7 @@ sagaMiddleware.run(rootSaga)
 
 store.subscribe(() => console.log(store.getState()))
 localStorage.authToken && store.dispatch(actionAllAds())
+localStorage.authToken && store.dispatch(actionMyAds(store.getState().authReducer.payload.sub.id))
 // localStorage.authToken && store.dispatch(actionAboutMe())
 
 export default store

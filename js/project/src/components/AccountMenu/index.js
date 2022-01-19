@@ -5,6 +5,7 @@ import { actionAuthLogout } from '../../actions';
 
 import { Box, Button, Avatar, Menu, MenuItem, ListItemIcon, Divider, IconButton, Typography, Tooltip } from '@mui/material';
 import { Logout, AccountCircle } from '@mui/icons-material';
+import FeedIcon from '@mui/icons-material/Feed';
 
 let state = store.getState()
 
@@ -30,7 +31,8 @@ export default function AccountMenu() {
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
-              <AccountCircle sx={{ width: 32, height: 32}} />
+              <AccountCircle sx={{ width: 32, height: 32 }} />
+              <Typography>&nbsp;&nbsp;&nbsp;{state.authReducer.payload.sub.login}</Typography>
           </IconButton>
         </Tooltip>
       </Box>
@@ -74,6 +76,13 @@ export default function AccountMenu() {
           <MenuItem  sx={{ mb: "0.5rem"}}>
             <Avatar />
             <Typography>Профиль</Typography>
+          </MenuItem>
+        </Link> 
+        <Divider />
+        <Link style={{ textDecoration: 'none', color: 'inherit' }} to={`/ads/${state.authReducer.payload.sub.id}`}>
+          <MenuItem  sx={{ mb: "0.5rem", mt: "0.5rem", pl: '12px' }}>
+            <FeedIcon color='action' sx={{ width: 32, height: 32, mr: '8px' }} />
+            <Typography>Мои объявления</Typography>
           </MenuItem>
         </Link> 
         <Divider />
