@@ -63,7 +63,7 @@ const MySearch = ({ onSearch }) => {
             }}
             value={inputValue}
           />
-      <CSearchResultList clearSearchValue={() => setInputValue('')} searchValue={inputValue}/>
+      <CSearchResultList clearSearchValue={() => setInputValue('')} searchValue={inputValue} />
       </Search>
     )
 }

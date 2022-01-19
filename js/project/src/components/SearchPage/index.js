@@ -1,12 +1,27 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { actionFavoriteAdd, actionFavoriteRemove } from '../../actions';
+import { actionFavoriteAdd, actionFavoriteRemove, actionSearch } from '../../actions';
 
 import noImg from '../../no-img.png';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 import { Grid, Card, CardMedia, CardContent, CardActions, Button, IconButton, Typography, Tooltip } from '@mui/material';
+
+const SearchPage = ({ match: { params: { searchText } }, getData}) => { 
+    useEffect(() => {
+        getData(searchText)
+    }, [searchText])
+    return (
+        <>
+            <CSearchPageInit />
+        </>
+    )
+}
+
+const CSearchPage = connect(null, { getData: actionSearch })(SearchPage)
+
 
 const SearchAd = ({ _id, owner, images, title, price, fav, onAdd, onRemove}) =>
   <Grid item xs={12} md={3}>
@@ -51,7 +66,8 @@ const SearchAd = ({ _id, owner, images, title, price, fav, onAdd, onRemove}) =>
 
 export const CSearchAd = connect(state => ({ fav: state.favoriteReducer }), { onAdd: actionFavoriteAdd, onRemove: actionFavoriteRemove })(SearchAd)
 
-const SearchPage = ({ searchResult }) =>
+
+const SearchPageInit = ({ searchResult }) =>
     <> 
     {console.log(searchResult)}
     <Typography sx={{textAlign: "center", pt: "1rem", pb: "1rem"}} variant='h4'>Результаты поиска</Typography>
@@ -59,6 +75,6 @@ const SearchPage = ({ searchResult }) =>
       {Object.values(searchResult).map((item) => <CSearchAd {...item} key={item._id}/> )}
     </Grid>
   </>
-const CSearchPage = connect(state => ({searchResult: state.searchReducer.searchResult?.payload.payload}))(SearchPage)
+const CSearchPageInit = connect(state => ({searchResult: state.searchReducer.searchResult?.payload.payload || []}))(SearchPageInit)
 
 export default CSearchPage;

@@ -63,6 +63,10 @@ export const actionNewAd = (title, description, address, price) =>
 
 // { images, title, description, tags, address, price }
 
+
+export const actionFeedStart = ads => ({type: 'FEED', ads})
+
+
 export const actionSearch = text => ({type: 'SEARCH', text})
 export const actionSearchResult = (payload) => ({ type: 'SEARCH_RESULT', payload })
 

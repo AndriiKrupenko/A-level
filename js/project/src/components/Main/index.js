@@ -37,7 +37,7 @@ const Main = (token) =>
         <Route path="/favorite" component={CFavorite} />
         <Route path="/ads/:_id" component={CMyAds} />
         <Route path="/profile/:_id" component={CMyProfile} />
-        <Route path="/search" component={CSearchPage} />
+        <Route path="/search/:searchText" component={CSearchPage} />
         <Route path="*" component={Page404} />
     </Switch>
 </Container>

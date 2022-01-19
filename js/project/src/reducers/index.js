@@ -1,8 +1,8 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 // import thunk from 'redux-thunk';
 import createSagaMiddleware from 'redux-saga';
-import { all, put, takeEvery, call, takeLatest } from 'redux-saga/effects';
-import { actionPending, actionResolved, actionRejected, actionLogin, actionAuthLogin, actionRegister, actionUploadFile, actionAvatar, actionAllAds, actionAboutMe, actionSearchResult, actionNewAd, actionMyAds, gql } from "../actions"
+import { all, put, takeEvery, call, takeLatest, select } from 'redux-saga/effects';
+import { actionPromise, actionPending, actionResolved, actionRejected, actionLogin, actionAuthLogin, actionRegister, actionUploadFile, actionAvatar, actionAllAds, actionAboutMe, actionSearchResult, actionNewAd, actionMyAds, gql } from "../actions"
 
 import { history } from '../App';
 
@@ -101,9 +101,43 @@ function searchReducer(state={}, {type, ...params}) {
     return state
 }
 
+function feedReducer(state=[], {type, ads}) {
+    if (type === 'FEED'){
+        return [...state, ...ads]
+    }
+    return state
+}
+
 const sagaMiddleware = createSagaMiddleware()
 
-const store = createStore(combineReducers({ promiseReducer: localStoredReducer(promiseReducer, 'forPromiseReducer'), authReducer: authReducer, favoriteReducer: localStoredReducer(favoriteReducer, 'favorite'), searchReducer: searchReducer }), applyMiddleware(sagaMiddleware))
+const store = createStore(combineReducers({ promiseReducer: localStoredReducer(promiseReducer, 'forPromiseReducer'), authReducer: authReducer, favoriteReducer: localStoredReducer(favoriteReducer, 'favorite'), searchReducer: searchReducer, feedReducer: feedReducer }), applyMiddleware(sagaMiddleware))
+
+const actionFeed = (payload) => ({ type: 'FEED_START', payload })
+
+function* feedWorker() {
+    let payload = yield call(promiseWorker, actionPromise('allAds', gql(`query ads{
+        AdFind(query: "[{}]") {
+            _id, 
+            owner {
+                login
+            },
+            images {
+                url
+            },
+            title,
+            description,
+            price
+        }
+    }`,
+        { skip: [(yield select()).feedReducer.length] } 
+    )))
+     
+    yield put(actionFeed({payload})) 
+}
+
+function* feedWatcher(){
+    yield takeLatest('FEED_START', feedWorker)
+}
 
 
 
@@ -120,7 +154,7 @@ function* searchWorker({ text }) {
                 }
             }`, {query: JSON.stringify([
                         {
-                            $or: [{title: `/${text}/`}, {description: `/${text}/`}] 
+                            $or: [{title: `/${text.trim().split(/\s+/).join('|')}/`}, {description: `/${text.trim().split(/\s+/).join('|')}/`}] 
                         },
                         {
                             sort: [{name: 1}]} 
@@ -139,7 +173,7 @@ function* searchWatcher(){
 
 function* setAvatarWorker({ file }) {
     const { _id } = yield call(promiseWorker, actionUploadFile(file))
-    const myId = store.getState().authReducer.payload.sub.id
+    const myId = yield select().authReducer.payload.sub.id
     yield put(actionAvatar(myId, _id)) 
     yield put(actionAboutMe())  
 } 
@@ -211,7 +245,8 @@ function* rootSaga() {
         loginWatcher(),
         registerWatcher(),
         setAvatarWatcher(),
-        searchWatcher()
+        searchWatcher(),
+        feedWatcher(),
     ])
 }
 

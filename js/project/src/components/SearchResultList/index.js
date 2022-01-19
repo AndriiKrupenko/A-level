@@ -63,8 +63,11 @@ function SearchResultList({ searchResult, searchValue, clearSearchValue }) {
                 {searchResult[0] && <Box sx={{mt: '10px', mr: '2%', textAlign: 'right'}}>
                     <Link
                         style={{ textDecoration: 'none' }}
-                        to={`/search`}
-                        onClick={() => clearSearchValue()}
+                        to={`/search/${searchValue}`}
+                        onClick={() => { 
+                            clearSearchValue()
+                        }
+                       }
                     >
                         <Button sx={{ bgcolor: '#4b0082', "&:hover": {bgcolor: '#4b0082', opacity: '0.7'}, ml: '5px', mb: '0' }} variant='contained'>Показать все результаты</Button>
                     </Link>
