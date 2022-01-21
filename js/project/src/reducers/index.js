@@ -1,8 +1,7 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-// import thunk from 'redux-thunk';
 import createSagaMiddleware from 'redux-saga';
 import { all, put, takeEvery, call, takeLatest, select } from 'redux-saga/effects';
-import { actionPromise, actionPending, actionResolved, actionRejected, actionLogin, actionAuthLogin, actionRegister, actionUploadFile, actionAvatar, actionAllAds, actionAboutMe, actionSearchResult, actionNewAd, actionMyAds, gql } from "../actions"
+import { actionPromise, actionPending, actionResolved, actionRejected, actionLogin, actionAuthLogin, actionRegister, actionUploadFile, actionAvatar, actionAllAds, actionAboutMe, actionSearchResult, gql } from "../actions"
 
 import { history } from '../App';
 
@@ -101,22 +100,34 @@ function searchReducer(state={}, {type, ...params}) {
     return state
 }
 
-function feedReducer(state=[], {type, ads}) {
-    if (type === 'FEED'){
-        return [...state, ...ads]
+function feedReducer(state = [], { type, ads }) {
+    if (type === 'FEED_RESULT') {
+        return [...state, ...ads.payload]
+    } else if (type === 'FEED_CLEAR_START') { 
+        return []
     }
     return state
 }
 
 const sagaMiddleware = createSagaMiddleware()
 
-const store = createStore(combineReducers({ promiseReducer: localStoredReducer(promiseReducer, 'forPromiseReducer'), authReducer: authReducer, favoriteReducer: localStoredReducer(favoriteReducer, 'favorite'), searchReducer: searchReducer, feedReducer: feedReducer }), applyMiddleware(sagaMiddleware))
+const store = createStore(combineReducers({ promiseReducer: localStoredReducer(promiseReducer, 'forPromiseReducer'), authReducer: authReducer, favoriteReducer: localStoredReducer(favoriteReducer, 'favorite'), searchReducer: searchReducer, feedReducer: localStoredReducer(feedReducer, 'feedReducer') }), applyMiddleware(sagaMiddleware))
 
-const actionFeed = (payload) => ({ type: 'FEED_START', payload })
+const actionFeedClearStart = () => ({ type: 'FEED_CLEAR_START' })
+
+function* feedClearWorker() {
+    yield put(actionFeedClearStart()) 
+}
+
+function* feedClearWatcher(){
+    yield takeEvery('FEED_CLEAR', feedClearWorker)
+}
+
+const actionFeed = (ads) => ({ type: 'FEED_RESULT', ads })
 
 function* feedWorker() {
-    let payload = yield call(promiseWorker, actionPromise('allAds', gql(`query ads{
-        AdFind(query: "[{}]") {
+    let payload = yield call(promiseWorker, actionPromise('feedAds', gql(`query feedAds($query: String){
+        AdFind(query: $query) {
             _id, 
             owner {
                 login
@@ -129,14 +140,14 @@ function* feedWorker() {
             price
         }
     }`,
-        { skip: [(yield select()).feedReducer.length] } 
+        { query: JSON.stringify([ {}, { sort: [{ _id: -1 }], skip: [(yield select()).feedReducer.length] }]) } 
     )))
      
     yield put(actionFeed({payload})) 
 }
 
 function* feedWatcher(){
-    yield takeLatest('FEED_START', feedWorker)
+    yield takeEvery('FEED_START', feedWorker)
 }
 
 
@@ -173,7 +184,7 @@ function* searchWatcher(){
 
 function* setAvatarWorker({ file }) {
     const { _id } = yield call(promiseWorker, actionUploadFile(file))
-    const myId = yield select().authReducer.payload.sub.id
+    const myId = store.getState().authReducer.payload.sub.id
     yield put(actionAvatar(myId, _id)) 
     yield put(actionAboutMe())  
 } 
@@ -247,14 +258,12 @@ function* rootSaga() {
         setAvatarWatcher(),
         searchWatcher(),
         feedWatcher(),
+        feedClearWatcher()
     ])
 }
 
 sagaMiddleware.run(rootSaga)
 
 store.subscribe(() => console.log(store.getState()))
-localStorage.authToken && store.dispatch(actionAllAds())
-localStorage.authToken && store.dispatch(actionMyAds(store.getState().authReducer.payload.sub.id))
-// localStorage.authToken && store.dispatch(actionAboutMe())
 
 export default store

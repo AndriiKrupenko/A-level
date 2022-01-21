@@ -1,9 +1,25 @@
 import { connect } from 'react-redux';
+import { useEffect } from 'react';
 import CMyDropzone from '../DropeZone';
+
+import { actionAboutMe } from '../../actions';
 
 import noImg from '../../no-img.png';
 
 import { Box, Container, Typography, Divider } from '@mui/material';
+
+const MyProfilePage = ({ aboutMe }) => { 
+    useEffect(() => {
+      aboutMe()
+    }, [])
+    return (
+        <>
+            <CMyProfile />
+        </>
+    )
+}
+
+const CMyProfilePage = connect(null, { aboutMe: actionAboutMe })(MyProfilePage)
 
 const MyProfile = ({ me: { _id, login, nick, avatar, createdAt, incomings, phones,  addresses } }) => 
   <Container sx={{display: 'flex', pt: '3vh'}}>
@@ -26,4 +42,4 @@ const MyProfile = ({ me: { _id, login, nick, avatar, createdAt, incomings, phone
          
 const CMyProfile = connect(state => ({me: state.promiseReducer.aboutMe?.payload || []}))(MyProfile)
 
-export default CMyProfile;
+export default CMyProfilePage;

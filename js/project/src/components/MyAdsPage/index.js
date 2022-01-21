@@ -1,11 +1,25 @@
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-
+import { useEffect } from 'react';
+import { actionMyAds } from '../../actions';
 import noImg from '../../no-img.png';
 
 import { Grid, Card, CardMedia, CardContent, CardActions, Button, Typography } from '@mui/material';
 
-export const MyAd = ({ _id, owner, images, title, price, onRemove}) =>
+const MyAdsPage = ({  _id, myAds }) => { 
+    useEffect(() => {
+      myAds(_id)
+    }, [])
+    return (
+        <>
+            <CMyAds />
+        </>
+    )
+}
+
+const CMyAdsPage = connect(state => ({ _id: state.authReducer.payload.sub.id }), { myAds: actionMyAds })(MyAdsPage)
+
+export const MyAd = ({ _id, owner, images, title, price}) =>
   <Grid item xs={12} md={3}>
     <Card sx={{ height: "100%", borderRadius: 3, boxShadow: '3px 3px 3px gray' }}>
       <Link to={`/ad/${_id}`}>
@@ -28,11 +42,12 @@ export const MyAd = ({ _id, owner, images, title, price, onRemove}) =>
 
 const MyAds = ({ myAds }) =>
   <>
-    <Typography sx={{textAlign: "center", pt: "1rem", pb: "1rem"}} variant='h4'>Мои объявления</Typography>
-    <Grid container spacing={3}>
+    <Typography sx={{ textAlign: "center", pt: "1rem", pb: "1rem" }} variant='h4'>Мои объявления</Typography>
+    { myAds && <Grid container spacing={3}>
       {Object.values(myAds).reverse().map((item) => <MyAd {...item} key={item._id}/> )}
-    </Grid>
+    </Grid>}
+    
   </>
-const CMyAds = connect(state => ({myAds: state.promiseReducer.myAds?.payload}))(MyAds)
+const CMyAds = connect(state => ({ myAds: state.promiseReducer?.myAds?.payload } || {}) )(MyAds)
 
-export default CMyAds;
+export default CMyAdsPage;

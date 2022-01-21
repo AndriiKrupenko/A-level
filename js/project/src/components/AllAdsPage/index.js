@@ -1,12 +1,27 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Grid, Card, CardMedia, CardContent, Typography, CardActions, Button, IconButton, Tooltip } from '@mui/material';
-import { actionFavoriteAdd, actionFavoriteRemove } from '../../actions';
-
+import { Grid, Card, CardMedia, CardContent, Typography, CardActions, Button, IconButton, Tooltip, Box } from '@mui/material';
+import { actionFavoriteAdd, actionFavoriteRemove, actionFeedStart, actionFeedClear } from '../../actions';
+import CPromisePreloader from '../PromisePreloader';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 import noImg from '../../no-img.png';
+
+const AllAdsPage = ({ initialFeed, clearFeed }) => { 
+    useEffect(() => {
+      initialFeed()
+      return () => clearFeed()
+    }, [])
+    return (
+        <>
+            <CAllAds />
+        </>
+    )
+}
+
+const CAllAdsPage = connect(null, { initialFeed: actionFeedStart, clearFeed: actionFeedClear })(AllAdsPage)
 
 const Ad = ({ _id, owner, images, title, price, fav, onAdd, onRemove}) =>
   <Grid item xs={12} md={3}>
@@ -52,11 +67,18 @@ const Ad = ({ _id, owner, images, title, price, fav, onAdd, onRemove}) =>
 
 export const CAd = connect(state => ({ fav: state.favoriteReducer }), { onAdd: actionFavoriteAdd, onRemove: actionFavoriteRemove })(Ad)
 
-const AllAds = ({ ads }) =>
-  <Grid container spacing={3}>
-    {ads.map((item) => <CAd {...item} key={Math.random()}/> )}
-  </Grid>
+const AllAds = ({ ads, newFeed }) =>
+  <>
+    <Grid container spacing={3}>
+      {ads.map((item) => <CAd {...item} key={Math.random()}/> )}
+    </Grid>
+    <CPromisePreloader name='feedAds'>
+      <Box sx={{ width: '100%', textAlign: 'center', mt: '2rem' }}>
+        <Button onClick={() => newFeed()} sx={{ bgcolor: '#4b0082', "&:hover": {bgcolor: '#4b0082', opacity: '0.7'} }} variant='contained'>Загрузить ещё...</Button>
+      </Box>
+    </CPromisePreloader>
+  </>
 
-const CAllAds = connect(state => ({ads: state.promiseReducer.allAds?.payload || []}))(AllAds)
+const CAllAds = connect(state => ({ads: state.feedReducer || []}), { newFeed: actionFeedStart })(AllAds)
 
-export default CAllAds;
+export default CAllAdsPage;
