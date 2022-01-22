@@ -20,22 +20,22 @@ const NewAd = ({ onAdd, myAds }) => {
 
     return (
         <Container sx={{display: 'flex', pt: '3vh'}}>
-            <Box sx={{ width: '50%', textAlign: 'center' }}>
-                {img ? <img style={{ maxWidth: '100%', maxHeight: '70vh', borderRadius: '10px' }} src={'/' + img.url} alt='adImg' /> :
-                    <img style={{ maxWidth: '100%', maxHeight: '70vh', borderRadius: '10px' }} src={noImg} alt='noImg' />}
+            <Box sx={{ width: '50%', textAlign: 'center', pt: '0.5rem' }}>
+                {img ? <img style={{ maxWidth: '100%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217' }} src={'/' + img.url} alt='adImg' /> :
+                    <img style={{ maxWidth: '100%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217' }} src={noImg} alt='noImg' />}
                 <CMyDropzoneForAds setImg={ setImg } />
             </Box>
             <Box sx={{ pl: '1rem', width: '50%', textAlign: 'left' }}>
                 <Typography variant='h5' color='primary' sx={{ textAlign: 'center', mb: '1rem' }}>Создать объявление</Typography>
                 <TextField
-                    sx={{  mb: '1rem', bgcolor: 'white' }}
+                    sx={{  mb: '1rem', bgcolor: '#E9DFC4' }}
                     fullWidth={true}
                     label="Название"
                     onChange={e => {setTitle(e.target.value)}}
                     // value={title}
                 />
                 <TextField
-                    sx={{ mb: '1rem', bgcolor: 'white' }}
+                    sx={{ mb: '1rem', bgcolor: '#E9DFC4' }}
                     fullWidth={true}
                     label="Описание"
                     multiline={true}
@@ -44,14 +44,14 @@ const NewAd = ({ onAdd, myAds }) => {
                     // value={description}
                 />
                 <TextField
-                    sx={{ width: '48.5%', mb: '1rem', mr: '3%', bgcolor: 'white' }}
+                    sx={{ width: '48.5%', mb: '1rem', mr: '3%', bgcolor: '#E9DFC4' }}
                     fullWidth={true}
                     label="Адрес"
                     onChange={e => {setAddress(e.target.value)}}
                     // value={description}
                 />
                 <TextField
-                    sx={{ width: '48.5%', mb: '1rem', bgcolor: 'white' }}   
+                    sx={{ width: '48.5%', mb: '1rem', bgcolor: '#E9DFC4' }}   
                     label="Цена"
                     type="number"
                     onChange={e => {setPrice(+e.target.value)}}
@@ -59,7 +59,7 @@ const NewAd = ({ onAdd, myAds }) => {
                 />
                 <Button
                     fullWidth={true}
-                    sx={{ bgcolor: '#4b0082', "&:hover": { bgcolor: '#4b0082', opacity: '0.7' }, height: '3.5rem' }} variant='contained'
+                    sx={{ bgcolor: 'primary', "&:hover": { bgcolor: 'secondary', opacity: '0.7' }, height: '3.5rem' }} variant='contained'
                     onClick={() => { 
                             onAdd(img._id, title, description, address, price)
                             myAds(store.getState().authReducer.payload.sub.id)

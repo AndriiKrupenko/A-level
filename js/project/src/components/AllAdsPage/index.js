@@ -24,8 +24,8 @@ const AllAdsPage = ({ initialFeed, clearFeed }) => {
 const CAllAdsPage = connect(null, { initialFeed: actionFeedStart, clearFeed: actionFeedClear })(AllAdsPage)
 
 const Ad = ({ _id, owner, images, title, price, fav, onAdd, onRemove}) =>
-  <Grid item xs={12} md={3}>
-    <Card sx={{ height: "100%", borderRadius: 3, boxShadow: '3px 3px 3px gray' }}>
+  <Grid item xs={12} md={3} sx={{bgcolor: 'secondary'}}>
+    <Card sx={{ height: "100%", borderRadius: 3, boxShadow: '3px 3px 3px #402217' }}>
       <Link to={`/ad/${_id}`}>
         {images && images[0] && images[0].url ? <CardMedia component="img" sx={{height: 200}} image={'/' + images[0].url} alt='adImg' /> : <CardMedia component="img" sx={{height: 200}} image={noImg} alt='noImg' />}
       </Link>
@@ -37,7 +37,7 @@ const Ad = ({ _id, owner, images, title, price, fav, onAdd, onRemove}) =>
       </CardContent>
       <CardActions sx={{ justifyContent: 'space-between', pb: '2px' }}>
         <Link style={{ textDecoration: 'none' }} to={`/ad/${_id}`}>
-          <Button sx={{ bgcolor: '#4b0082', "&:hover": {bgcolor: '#4b0082', opacity: '0.7'}, ml: '5px', mb: '0' }} variant='contained'>Подробнее...</Button>
+          <Button sx={{ bgcolor: 'primary', "&:hover": {bgcolor: 'secondary', opacity: '0.7'}, ml: '5px', mb: '0' }} variant='contained'>Подробнее...</Button>
         </Link>
           {fav[_id] ?
             <Tooltip title="Удалить из избранных">
@@ -46,7 +46,7 @@ const Ad = ({ _id, owner, images, title, price, fav, onAdd, onRemove}) =>
                 size="large"
                 color="inherit"
               >
-                <FavoriteIcon sx={{ color: "#4b0082", width: 32, height: 32 }} />
+                <FavoriteIcon sx={{ color: "primary", width: 32, height: 32 }} />
               </IconButton>
             </Tooltip>
             :
@@ -56,7 +56,7 @@ const Ad = ({ _id, owner, images, title, price, fav, onAdd, onRemove}) =>
                 size="large"
                 color="inherit"
               >
-                <FavoriteBorderIcon sx={{ color: "#4b0082", width: 32, height: 32 }} />
+                <FavoriteBorderIcon sx={{ color: "primary", width: 32, height: 32 }} />
               </IconButton>
             </Tooltip>
           }
@@ -74,7 +74,7 @@ const AllAds = ({ ads, newFeed }) =>
     </Grid>
     <CPromisePreloader name='feedAds'>
       <Box sx={{ width: '100%', textAlign: 'center', mt: '2rem' }}>
-        <Button onClick={() => newFeed()} sx={{ bgcolor: '#4b0082', "&:hover": {bgcolor: '#4b0082', opacity: '0.7'} }} variant='contained'>Загрузить ещё...</Button>
+        <Button onClick={() => newFeed()} sx={{ bgcolor: 'primary', "&:hover": {bgcolor: 'secondary', opacity: '0.7'} }} variant='contained'>Загрузить ещё...</Button>
       </Box>
     </CPromisePreloader>
   </>

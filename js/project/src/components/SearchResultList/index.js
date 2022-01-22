@@ -9,15 +9,15 @@ function SearchResultList({ searchResult, searchValue, clearSearchValue }) {
     return (
         <Box sx={{overflow: 'auto'}}>
             { searchResult && searchValue &&
-            <List sx={{ position: 'absolute', width: 'calc(100% - 4px)', bgcolor: 'background.paper', border: '2px solid #4b0082', borderRadius: '5px' }} style={{maxHeight: '80vh', overflow: 'auto'}}>
-                {searchResult[0] ? searchResult.map(item => 
+            <List sx={{ position: 'absolute', width: 'calc(100% - 4px)', bgcolor: '#E9DFC4', border: '2px solid #290302', borderRadius: '5px' }} style={{maxHeight: '80vh', overflow: 'auto'}}>
+                {searchResult[0] ? searchResult.reverse().map(item => 
                     <>
                         <Link
                             style={{ textDecoration: 'none' }}
                             to={`/ad/${item._id}`}
                             onClick={() => clearSearchValue()}
                         >
-                            <ListItem alignItems="flex-start" key={item._id}>
+                            <ListItem alignItems="flex-start" key={Math.random()}>
                                 <ListItemAvatar>
                                     { item?.images?.[0]?.url ? <Avatar alt={item?.title} src={'/' + item?.images?.[0]?.url} /> : <Avatar alt={item?.title} src={noImg} />}
                                 </ListItemAvatar>
@@ -69,7 +69,7 @@ function SearchResultList({ searchResult, searchValue, clearSearchValue }) {
                         }
                        }
                     >
-                        <Button sx={{ bgcolor: '#4b0082', "&:hover": {bgcolor: '#4b0082', opacity: '0.7'}, ml: '5px', mb: '0' }} variant='contained'>Показать все результаты</Button>
+                        <Button sx={{ bgcolor: 'primary', "&:hover": {bgcolor: 'secondary', opacity: '0.7'}, ml: '5px', mb: '0' }} variant='contained'>Показать все результаты</Button>
                     </Link>
                 </Box>}
             </List>}

@@ -24,7 +24,7 @@ const CMyProfilePage = connect(null, { aboutMe: actionAboutMe })(MyProfilePage)
 const MyProfile = ({ me: { _id, login, nick, avatar, createdAt, incomings, phones,  addresses } }) => 
   <Container sx={{display: 'flex', pt: '3vh'}}>
       <Box sx={{ width: '50%', textAlign: 'center' }}>
-        {avatar && avatar.url ? <img style={{maxWidth: '100%', maxHeight: '70vh', borderRadius: '10px'}} src={'/' + avatar.url} alt='adImg' /> : <img style={{maxWidth: '100%', maxHeight: '70vh', borderRadius: '10px'}} src={noImg} alt='noImg' />}
+        {avatar && avatar.url ? <img style={{maxWidth: '100%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217'}} src={'/' + avatar.url} alt='adImg' /> : <img style={{maxWidth: '100%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217'}} src={noImg} alt='noImg' />}
         <CMyDropzone />
       </Box>
       <Box sx={{ pl: '1rem', width: '50%', textAlign: 'left' }}>

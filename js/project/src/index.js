@@ -9,9 +9,26 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#4b0082'
+      // main: '#4b0082'
+      // main: '#000066'
+      main: '#290302'
+    },
+    secondary: {
+      main: '#D4C199'
     }
-  }
+  },
+  components: {
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#E9DFC4'
+        }
+      }
+    }
+  },
+  typography: {
+    fontFamily: 'Roboto Slab'
+  },
 });
 
 ReactDOM.render(

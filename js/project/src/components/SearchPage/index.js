@@ -69,10 +69,10 @@ export const CSearchAd = connect(state => ({ fav: state.favoriteReducer }), { on
 
 const SearchPageInit = ({ searchResult }) =>
     <> 
-    {console.log(searchResult)}
+    {/* {console.log(searchResult)} */}
     <Typography sx={{textAlign: "center", pt: "1rem", pb: "1rem"}} variant='h4'>Результаты поиска</Typography>
     <Grid container spacing={3}>
-      {Object.values(searchResult).map((item) => <CSearchAd {...item} key={item._id}/> )}
+      {Object.values(searchResult).reverse().map((item) => <CSearchAd {...item} key={item._id}/> )}
     </Grid>
   </>
 const CSearchPageInit = connect(state => ({searchResult: state.searchReducer.searchResult?.payload.payload || []}))(SearchPageInit)

@@ -22,7 +22,7 @@ const CAdPage = connect(null, { getData: actionAdById })(AdPage)
 const AdPageCard = ({ ad: { _id, title, images, description, price, owner, createdAt, address, tags, comments } }) => 
   <Container sx={{display: 'flex', pt: '3vh'}}>
       <Box sx={{ width: '50%', textAlign: 'center' }}>
-      {images && images[0] && images[0].url ? <img style={{maxWidth: '100%', maxHeight: '70vh', borderRadius: '10px'}} src={'/' + images[0].url} alt='adImg' /> : <img style={{maxWidth: '100%', maxHeight: '70vh', borderRadius: '10px'}} src={noImg} alt='noImg' />}
+        {images && images[0] && images[0].url ? <img style={{maxWidth: '100%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217'}} src={'/' + images[0].url} alt='adImg' /> : <img style={{maxWidth: '100%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217', color: '#FFF8DC'}} src={noImg} alt='noImg' />}
       </Box>
       <Box sx={{ pl: '1rem', width: '50%', textAlign: 'left' }}>
       <Typography variant='h3' sx={{pb: '1rem'}}>{title ? title : "Unnamed"}</Typography>

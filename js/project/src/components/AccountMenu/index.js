@@ -74,29 +74,29 @@ export default function AccountMenu() {
         >
         <Link style={{ textDecoration: 'none', color: 'inherit' }} to={`/profile/${state.authReducer.payload.sub.id}`}>
           <MenuItem  sx={{ mb: "0.5rem"}}>
-            <Avatar />
+            <Avatar sx={{ bgcolor: '#290302' }}/>
             <Typography>Профиль</Typography>
           </MenuItem>
         </Link> 
         <Divider />
         <Link style={{ textDecoration: 'none', color: 'inherit' }} to={`/ads/${state.authReducer.payload.sub.id}`}>
           <MenuItem  sx={{ mb: "0.5rem", mt: "0.5rem", pl: '12px' }}>
-            <FeedIcon color='action' sx={{ width: 32, height: 32, mr: '8px' }} />
+            <FeedIcon color='action' sx={{ width: 32, height: 32, mr: '8px', color: '#290302' }} />
             <Typography>Мои объявления</Typography>
           </MenuItem>
         </Link> 
         <Divider />
         <MenuItem sx={{ mt: "0.5rem", pt: "0.5rem", pb: "0.5rem"}}>
           <ListItemIcon>
-            <Logout fontSize="small" />
+            <Logout fontSize="small" sx={{ color: '#290302' }}/>
           </ListItemIcon>
           <Typography onClick={() => store.dispatch(actionAuthLogout())}>Выйти</Typography>
         </MenuItem>
       </Menu></> : <><Link  style={{ textDecoration: 'none', color: 'inherit' }} to="/login" >
-        <Button sx={{ ml: '10px', mr: '5px', color: '#4b0082', bgcolor: '#fff', "&:hover": {bgcolor: '#9c27b0', color: '#fff'} }}  variant='contained'>Войти</Button>
+        <Button sx={{ ml: '10px', mr: '5px', color: '#290302', bgcolor: '#fff', "&:hover": {bgcolor: '#E9DFC4', color: '#290302'} }}  variant='contained'>Войти</Button>
       </Link>
       <Link style={{ textDecoration: 'none', color: 'inherit' }} to="/registration" >
-        <Button sx={{ ml: '5px', color: '#4b0082', bgcolor: '#fff', "&:hover": {bgcolor: '#9c27b0', color: '#fff'} }} variant='contained'>Регистрация</Button>
+        <Button sx={{ ml: '5px', color: '#290302', bgcolor: '#fff', "&:hover": {bgcolor: '#E9DFC4', color: '#290302'} }} variant='contained'>Регистрация</Button>
       </Link></>
       }
     </>

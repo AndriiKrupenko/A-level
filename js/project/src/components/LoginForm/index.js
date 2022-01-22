@@ -14,7 +14,7 @@ const LoginForm = ({ onLogin }) => {
       <Container sx={{ pt: '15vh', pb: '25px', minHeight: '89.4vh', width: '100%' }}>
         <Box
           component="form"
-          sx={{ bgcolor: '#fff', width: '300px', borderRadius: '10px', mr: 'auto', ml: 'auto', textAlign: 'center', pt: '1rem', pb: '1rem',
+          sx={{ bgcolor: '#E9DFC4', width: '300px', borderRadius: '10px', mr: 'auto', ml: 'auto', textAlign: 'center', pt: '1rem', pb: '1rem',
             '& .MuiTextField-root': { m: 1, width: '25ch' },
           }}
           noValidate
@@ -37,9 +37,9 @@ const LoginForm = ({ onLogin }) => {
               value={password}
               onChange={e => setPassword(e.target.value)} 
             />
-              <Button sx={{ mt: '1rem', mr: '0.5rem', color: '#fff', bgcolor: '#4b0082', "&:hover": {bgcolor: '#9c27b0', color: '#fff'} }} variant='contained' disabled={!(login && password)} onClick={() => {onLogin(login, password)}}>Войти</Button>&nbsp;
+              <Button sx={{ mt: '1rem', mr: '0.5rem', color: '#fff', bgcolor: 'primary', "&:hover": {bgcolor: 'secondary', color: '#fff'} }} variant='contained' disabled={!(login && password)} onClick={() => {onLogin(login, password)}}>Войти</Button>&nbsp;
               <Link style={{ textDecoration: 'none', color: 'inherit' }} to="/registration" >
-                <Button sx={{ mt: '1rem', color: '#fff', bgcolor: '#4b0082', "&:hover": {bgcolor: '#9c27b0', color: '#fff'} }} variant='contained'>Регистрация &gt;&gt;</Button>
+                <Button sx={{ mt: '1rem', color: '#fff', bgcolor: 'primary', "&:hover": {bgcolor: 'secondary', color: '#fff'} }} variant='contained'>Регистрация &gt;&gt;</Button>
               </Link>
             
         </Box>

@@ -16,7 +16,7 @@ import { Container, Typography } from '@mui/material';
 
 const PageMain = () => 
   <>
-    <Typography sx={{ textAlign: "center", pt: "1rem", pb: "1rem" }} variant='h4'>Объявления</Typography>
+    <Typography sx={{ textAlign: "center", pt: "1rem", pb: "1rem" }} variant='h4'>Все объявления</Typography>
     <CAllAdsPage />
   </>
 

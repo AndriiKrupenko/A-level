@@ -8,7 +8,7 @@ import { Logo } from '../../App';
 import { AppBar, Box, Toolbar, IconButton, Badge, Tooltip, Typography } from '@mui/material'
 
 import MailIcon from '@mui/icons-material/Mail';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteIcon from '@mui/icons-material/Favorite'; 
 import AddIcon from '@mui/icons-material/Add';
 
 const Header = ({ token, favorite }) => 

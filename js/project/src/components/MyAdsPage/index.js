@@ -21,7 +21,7 @@ const CMyAdsPage = connect(state => ({ _id: state.authReducer.payload.sub.id }),
 
 export const MyAd = ({ _id, owner, images, title, price}) =>
   <Grid item xs={12} md={3}>
-    <Card sx={{ height: "100%", borderRadius: 3, boxShadow: '3px 3px 3px gray' }}>
+    <Card sx={{ height: "100%", borderRadius: 3, boxShadow: '3px 3px 3px #402217' }}>
       <Link to={`/ad/${_id}`}>
         {images && images[0] && images[0].url ? <CardMedia component="img" sx={{height: 200}} image={'/' + images[0].url} alt='adImg' /> : <CardMedia component="img" sx={{height: 200}} image={noImg} alt='noImg' />}
       </Link>
@@ -33,7 +33,7 @@ export const MyAd = ({ _id, owner, images, title, price}) =>
       </CardContent>
       <CardActions sx={{ justifyContent: 'space-between', pb: '2px' }}>
         <Link style={{ textDecoration: 'none' }} to={`/ad/${_id}`}>
-          <Button sx={{ bgcolor: '#4b0082', "&:hover": {bgcolor: '#4b0082', opacity: '0.7'}, ml: '5px', mb: '10px' }} variant='contained'>Подробнее...</Button>
+          <Button sx={{ bgcolor: 'primary', "&:hover": {bgcolor: 'secondary', opacity: '0.7'}, ml: '5px', mb: '10px' }} variant='contained'>Подробнее...</Button>
         </Link>
       </CardActions>
     </Card>
