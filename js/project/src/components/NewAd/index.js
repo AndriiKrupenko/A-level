@@ -8,7 +8,7 @@ import CMyDropzoneForAds from '../DropeZoneForAds';
 
 import noImg from '../../no-img.png';
 
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Container, Typography, Grid } from '@mui/material';
 
 const NewAd = ({ onAdd, myAds }) => { 
     // title, description, address, price
@@ -16,14 +16,34 @@ const NewAd = ({ onAdd, myAds }) => {
     const [description, setDescription] = useState('')
     const [address, setAddress] = useState('')
     const [price, setPrice] = useState(0)
-    const [img, setImg] = useState(null)
+    const [img, setImg] = useState([])
+    // const [imageForLayout, setImageForLayout] = useState('')
 
+    const images = (img) => { 
+        let myImg = img
+        for (let newImg of myImg) { 
+            delete newImg.url
+        }
+        return myImg
+    }
+        
+
+    
     return (
         <Container sx={{display: 'flex', pt: '3vh'}}>
             <Box sx={{ width: '50%', textAlign: 'center', pt: '0.5rem' }}>
-                {img ? <img style={{ maxWidth: '100%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217' }} src={'/' + img.url} alt='adImg' /> :
-                    <img style={{ maxWidth: '100%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217' }} src={noImg} alt='noImg' />}
-                <CMyDropzoneForAds setImg={ setImg } />
+                {img[0] ? <img style={{ maxWidth: '100%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217' }} src={'/' + img[0].url} alt='adImg' /> :
+                <img style={{ maxWidth: '100%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217' }} src={noImg} alt='noImg' />} <br />
+                {img[0] &&
+                    <Box sx={{ display: 'flex', maxWidth: '80%', ml: 'auto', mr: 'auto' }}>
+                        <Grid container >
+                            {img.map(image =>
+                                <Grid item xs={4} key={image._id }>
+                                    <img style={{ maxHeight: '10vh', borderRadius: '10px', border: '5px solid #402217', marginTop: '0.8rem' }} src={'/' + image.url} alt='adImg' />
+                                </Grid>)}
+                        </Grid>
+                    </Box>}
+                <CMyDropzoneForAds setImg={setImg} />
             </Box>
             <Box sx={{ pl: '1rem', width: '50%', textAlign: 'left' }}>
                 <Typography variant='h5' color='primary' sx={{ textAlign: 'center', mb: '1rem' }}>Создать объявление</Typography>
@@ -61,7 +81,7 @@ const NewAd = ({ onAdd, myAds }) => {
                     fullWidth={true}
                     sx={{ bgcolor: 'primary', "&:hover": { bgcolor: 'secondary', opacity: '0.7' }, height: '3.5rem' }} variant='contained'
                     onClick={() => { 
-                            onAdd(img._id, title, description, address, price)
+                            onAdd(images(img), title, description, address, price)
                             myAds(store.getState().authReducer.payload.sub.id)
                             history.push(`/ads/${store.getState().authReducer.payload.sub.id}`)
                         }

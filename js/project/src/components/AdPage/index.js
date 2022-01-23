@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import noImg from '../../no-img.png';
 
-import { Box, Container, Divider, Typography } from '@mui/material';
+import { Box, Container, Divider, Typography, Grid } from '@mui/material';
 
 const AdPage = ({ match: { params: { _id } }, getData}) => { 
     useEffect(() => {
@@ -23,7 +23,17 @@ const AdPageCard = ({ ad: { _id, title, images, description, price, owner, creat
   <Container sx={{display: 'flex', pt: '3vh'}}>
       <Box sx={{ width: '50%', textAlign: 'center' }}>
         {images && images[0] && images[0].url ? <img style={{maxWidth: '100%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217'}} src={'/' + images[0].url} alt='adImg' /> : <img style={{maxWidth: '100%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217', color: '#FFF8DC'}} src={noImg} alt='noImg' />}
+        {images && images[0] &&
+                    <Box sx={{ display: 'flex', maxWidth: '80%', ml: 'auto', mr: 'auto' }}>
+                        <Grid container >
+                            {images.map(image =>
+                                <Grid item xs={4} key={image._id }>
+                                    <img style={{ maxHeight: '10vh', borderRadius: '10px', border: '5px solid #402217', marginTop: '0.8rem' }} src={'/' + image.url} alt='adImg' />
+                                </Grid>)}
+                        </Grid>
+                    </Box>}
       </Box>
+      
       <Box sx={{ pl: '1rem', width: '50%', textAlign: 'left' }}>
       <Typography variant='h3' sx={{pb: '1rem'}}>{title ? title : "Unnamed"}</Typography>
       <Divider />

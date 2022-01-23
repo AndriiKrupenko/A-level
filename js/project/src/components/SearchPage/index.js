@@ -37,7 +37,7 @@ const SearchAd = ({ _id, owner, images, title, price, fav, onAdd, onRemove}) =>
       </CardContent>
       <CardActions sx={{ justifyContent: 'space-between', pb: '2px' }}>
         <Link style={{ textDecoration: 'none' }} to={`/ad/${_id}`}>
-          <Button sx={{ bgcolor: '#4b0082', "&:hover": {bgcolor: '#4b0082', opacity: '0.7'}, ml: '5px', mb: '0' }} variant='contained'>Подробнее...</Button>
+          <Button sx={{ bgcolor: 'primary', "&:hover": {bgcolor: 'secondary', opacity: '0.7'}, ml: '5px', mb: '0' }} variant='contained'>Подробнее...</Button>
         </Link>
           {fav[_id] ?
             <Tooltip title="Удалить из избранных">
@@ -46,7 +46,7 @@ const SearchAd = ({ _id, owner, images, title, price, fav, onAdd, onRemove}) =>
                 size="large"
                 color="inherit"
               >
-                <FavoriteIcon sx={{ color: "#4b0082", width: 32, height: 32 }} />
+                <FavoriteIcon sx={{ color: "primary", width: 32, height: 32 }} />
               </IconButton>
             </Tooltip>
             :
@@ -56,7 +56,7 @@ const SearchAd = ({ _id, owner, images, title, price, fav, onAdd, onRemove}) =>
                 size="large"
                 color="inherit"
               >
-                <FavoriteBorderIcon sx={{ color: "#4b0082", width: 32, height: 32 }} />
+                <FavoriteBorderIcon sx={{ color: "primary", width: 32, height: 32 }} />
               </IconButton>
             </Tooltip>
           }

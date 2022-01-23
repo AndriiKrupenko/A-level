@@ -17,7 +17,7 @@ function SearchResultList({ searchResult, searchValue, clearSearchValue }) {
                             to={`/ad/${item._id}`}
                             onClick={() => clearSearchValue()}
                         >
-                            <ListItem alignItems="flex-start" key={Math.random()}>
+                            <ListItem alignItems="flex-start" key={item._id}>
                                 <ListItemAvatar>
                                     { item?.images?.[0]?.url ? <Avatar alt={item?.title} src={'/' + item?.images?.[0]?.url} /> : <Avatar alt={item?.title} src={noImg} />}
                                 </ListItemAvatar>

@@ -46,9 +46,9 @@ export const actionMyAds = (_id) =>
 
 
 export const actionNewAd = (img, title, description, address, price) =>
-    actionPromise('newAd', gql(`mutation newAd($img: ID, $title: String, $description: String, $address: String, $price: Float){
+    actionPromise('newAd', gql(`mutation newAd($img: [ImageInput], $title: String, $description: String, $address: String, $price: Float){
         AdUpsert(ad: {
-            images: [{_id: $img}],
+            images: $img,
             title:$title, 
             description: $description,
             address: $address,
@@ -58,10 +58,7 @@ export const actionNewAd = (img, title, description, address, price) =>
                     address,
                     price, 
                 }
-    }`, {img, title, description, address, price}))
-
-// { images, title, description, tags, address, price }
-
+    }`, { img, title, description, address, price }))
 
 export const actionFeedStart = () => ({ type: 'FEED_START' })
 export const actionFeedClear = () => ({ type: 'FEED_CLEAR' })
