@@ -1,5 +1,5 @@
-import React, {useCallback, useMemo} from 'react'
-import { useDropzone } from 'react-dropzone'
+import React, { useCallback, useMemo } from 'react';
+import { useDropzone } from 'react-dropzone';
 import { connect } from 'react-redux';
 import { actionUploadFile } from '../../actions';
 
@@ -7,14 +7,14 @@ const baseStyle = {
   flex: 1,
   display: 'flex',
   flexDirection: 'column',
-  width: '80%',
+  width: '74%',
   alignItems: 'center',
   marginTop: '20px',
   marginLeft: 'auto',
   marginRight: 'auto',
   padding: '30px',
   borderWidth: 3,
-  borderRadius: 5,
+  borderRadius: 10,
   borderColor: '#290302',
   borderStyle: 'dashed',
   backgroundColor: '#E9DFC4',
@@ -35,20 +35,7 @@ const rejectStyle = {
   borderColor: 'red'
 };
 
-function MyDropzoneForAds({ setImageForLayout, setImg, onLoad }) {
-  // let imagesToAd = []
-  // let imagesToAdFull = []
-
-  // const onDrop = useCallback(acceptedFiles => {
-  //       // Do something with the files
-  //   acceptedFiles.map(async file => await (onLoad(file).promise.then(res => {
-  //     imagesToAd.push({ _id: res._id })
-  //     imagesToAdFull.push(res)
-  //   })))
-    
-  //   setImg(imagesToAd)
-  //   setImageForLayout(imagesToAdFull)
-  //   }, [])
+function MyDropzoneForAds({ setImg, onLoad, fav }) {
 
   let imagesToAd = []
 
@@ -57,7 +44,14 @@ function MyDropzoneForAds({ setImageForLayout, setImg, onLoad }) {
     acceptedFiles.map(async file => await (onLoad(file).promise.then(res => imagesToAd.push(res))))
     
     setImg(imagesToAd)
-    }, [])
+  }, [])
+  
+  // const onDrop = useCallback(acceptedFiles => {
+  //       // Do something with the files
+  //   acceptedFiles.map(async file => await (onLoad(file).promise.then(res => imagesToAd.push(res))))
+    
+  //   setImg(imagesToAd)
+  //   }, [])
 
   const {
     acceptedFiles,

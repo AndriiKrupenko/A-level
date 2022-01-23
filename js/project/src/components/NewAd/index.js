@@ -5,19 +5,25 @@ import { actionNewAd, actionMyAds } from "../../actions";
 import { history } from '../../App';
 import { Button, TextField } from '@mui/material/';
 import CMyDropzoneForAds from '../DropeZoneForAds';
+import { sortableContainer, sortableElement } from 'react-sortable-hoc';
+import { arrayMoveImmutable } from 'array-move'
 
 import noImg from '../../no-img.png';
 
 import { Box, Container, Typography, Grid } from '@mui/material';
 
+const SortableItem = sortableElement(({value}) => <li style={{ listStyleType: 'none', marginRight: '1rem' }}>{value}</li>);
+
+const SortableContainer = sortableContainer(({children}) => {
+    return <ul style={{ display: 'flex', flexDirection: 'column', paddingLeft: '0', marginTop: '0' }}>{children}</ul>;
+});
+
 const NewAd = ({ onAdd, myAds }) => { 
-    // title, description, address, price
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [address, setAddress] = useState('')
     const [price, setPrice] = useState(0)
     const [img, setImg] = useState([])
-    // const [imageForLayout, setImageForLayout] = useState('')
 
     const images = (img) => { 
         let myImg = img
@@ -27,35 +33,36 @@ const NewAd = ({ onAdd, myAds }) => {
         return myImg
     }
         
-
+    const onSortEnd = ({oldIndex, newIndex}) => {
+        setImg(arrayMoveImmutable(img, oldIndex, newIndex))
+    }
     
     return (
-        <Container sx={{display: 'flex', pt: '3vh'}}>
-            <Box sx={{ width: '50%', textAlign: 'center', pt: '0.5rem' }}>
+        <Container sx={{ display: 'flex', justifyContent: 'center', pt: '3vh' }}>
+            {img[0] && <Box sx={{ width: '14%', textAlign: 'center', pt: '0.5rem' }}>
+                <SortableContainer onSortEnd={onSortEnd}>
+                    {img.map((image, index) =>
+                        <SortableItem key={image._id} index={index} value={
+                            <img style={{ maxHeight: '10vh', borderRadius: '10px', border: '5px solid #402217', marginTop: '0.8rem', }} src={'/' + image.url} alt='adImg' />
+                        } />)}
+                </SortableContainer>
+            </Box>}
+            <Box sx={{ width: '43%', textAlign: 'center', pt: '0.5rem' }}>
                 {img[0] ? <img style={{ maxWidth: '100%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217' }} src={'/' + img[0].url} alt='adImg' /> :
-                <img style={{ maxWidth: '100%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217' }} src={noImg} alt='noImg' />} <br />
-                {img[0] &&
-                    <Box sx={{ display: 'flex', maxWidth: '80%', ml: 'auto', mr: 'auto' }}>
-                        <Grid container >
-                            {img.map(image =>
-                                <Grid item xs={4} key={image._id }>
-                                    <img style={{ maxHeight: '10vh', borderRadius: '10px', border: '5px solid #402217', marginTop: '0.8rem' }} src={'/' + image.url} alt='adImg' />
-                                </Grid>)}
-                        </Grid>
-                    </Box>}
+                <img style={{ maxWidth: '100%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217' }} src={noImg} alt='noImg' />}
                 <CMyDropzoneForAds setImg={setImg} />
             </Box>
-            <Box sx={{ pl: '1rem', width: '50%', textAlign: 'left' }}>
+            <Box sx={{ pl: '1rem', width: '43%', textAlign: 'left' }}>
                 <Typography variant='h5' color='primary' sx={{ textAlign: 'center', mb: '1rem' }}>Создать объявление</Typography>
                 <TextField
-                    sx={{  mb: '1rem', bgcolor: '#E9DFC4' }}
+                    sx={{  mb: '1rem', bgcolor: '#E9DFC4', borderRadius: '4px' }}
                     fullWidth={true}
                     label="Название"
                     onChange={e => {setTitle(e.target.value)}}
                     // value={title}
                 />
                 <TextField
-                    sx={{ mb: '1rem', bgcolor: '#E9DFC4' }}
+                    sx={{ mb: '1rem', bgcolor: '#E9DFC4', borderRadius: '4px' }}
                     fullWidth={true}
                     label="Описание"
                     multiline={true}
@@ -64,14 +71,14 @@ const NewAd = ({ onAdd, myAds }) => {
                     // value={description}
                 />
                 <TextField
-                    sx={{ width: '48.5%', mb: '1rem', mr: '3%', bgcolor: '#E9DFC4' }}
+                    sx={{ width: '48.5%', mb: '1rem', mr: '3%', bgcolor: '#E9DFC4', borderRadius: '4px' }}
                     fullWidth={true}
                     label="Адрес"
                     onChange={e => {setAddress(e.target.value)}}
                     // value={description}
                 />
                 <TextField
-                    sx={{ width: '48.5%', mb: '1rem', bgcolor: '#E9DFC4' }}   
+                    sx={{ width: '48.5%', mb: '1rem', bgcolor: '#E9DFC4', borderRadius: '4px' }}   
                     label="Цена"
                     type="number"
                     onChange={e => {setPrice(+e.target.value)}}

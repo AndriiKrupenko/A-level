@@ -142,10 +142,8 @@ export const actionAdById = (_id) =>
             price,
 			}
         }`,
-        {query: JSON.stringify([
-            { _id },
-            // { skip: [100] } //пропустить часть результатов?
-        ])}
+        {query: JSON.stringify([{ _id }])
+        }
     ))
 
 export const actionUserById = (_id) => 
