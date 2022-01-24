@@ -6,10 +6,12 @@ import CAllAdsPage from '../AllAdsPage';
 import CAdPage from '../AdPage';
 import CMyProfilePage from '../myProfile';
 import CFavorite from '../Favorite';
+import CAdEditor from '../AdEditor';
 
 import CSearchPage from '../SearchPage';
 import CNewAd from '../NewAd'
 import CMyAdsPage from '../MyAdsPage'
+import CProfileEditor from '../ProfileEditor'
 
 import { Container, Typography } from '@mui/material';
 
@@ -32,10 +34,12 @@ const Main = (token) =>
         <Redirect from="/main" to="/" />
         <Route path="/" component={PageMain} exact />
         <Route path="/ad/:_id" component={CAdPage} />
+        <Route path="/edit/:_id" component={CAdEditor} />
         <Route path="/newad" component={CNewAd} />
         <Route path="/favorite" component={CFavorite} />
         <Route path="/ads/:_id" component={CMyAdsPage} />
         <Route path="/profile/:_id" component={CMyProfilePage} />
+        <Route path="/editprofile/:_id" component={CProfileEditor} />
         <Route path="/search/:searchText" component={CSearchPage} />
         <Route path="*" component={Page404} />
     </Switch>

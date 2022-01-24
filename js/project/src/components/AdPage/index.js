@@ -30,7 +30,7 @@ const AdPageCard = ({ ad: { _id, title, images, description, price, owner, creat
                                 <Grid item xs={4} key={image._id }>
                                     <img style={{ maxHeight: '10vh', borderRadius: '10px', border: '5px solid #402217', marginTop: '0.8rem' }} src={'/' + image.url} alt='adImg' />
                                 </Grid>)}
-                        </Grid>
+                        </Grid> 
                     </Box>}
       </Box>
       

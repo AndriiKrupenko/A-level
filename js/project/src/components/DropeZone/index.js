@@ -3,6 +3,8 @@ import { useDropzone } from 'react-dropzone'
 // import { actionUploadFile } from "../../actions"
 import { connect } from 'react-redux';
 import { actionSetAvatar } from '../../actions';
+import { Tooltip, Button, TextField, Box, Container, Typography } from '@mui/material/';
+import EditIcon from '@mui/icons-material/Edit';
 
 
 function MyDropzone({ onLoad }) {
@@ -21,7 +23,9 @@ function MyDropzone({ onLoad }) {
       {
         isDragActive ?
           <p>Drop the files here ...</p> :
-          <button>Load file</button>
+          <Tooltip title="Редактировать">
+            <EditIcon color='primary' sx={{  width: 37, height: 37, cursor: 'pointer' }} />
+          </Tooltip> 
           
       }
     </div>

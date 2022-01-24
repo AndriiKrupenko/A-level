@@ -4,7 +4,8 @@ import { useEffect } from 'react';
 import { actionMyAds } from '../../actions';
 import noImg from '../../no-img.png';
 
-import { Grid, Card, CardMedia, CardContent, CardActions, Button, Typography } from '@mui/material';
+import { Grid, Card, CardMedia, CardContent, CardActions, Button, Typography, Tooltip } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 
 const MyAdsPage = ({  _id, myAds }) => { 
     useEffect(() => {
@@ -26,7 +27,14 @@ export const MyAd = ({ _id, owner, images, title, price}) =>
         {images && images[0] && images[0].url ? <CardMedia component="img" sx={{height: 200}} image={'/' + images[0].url} alt='adImg' /> : <CardMedia component="img" sx={{height: 200}} image={noImg} alt='noImg' />}
       </Link>
       <CardContent sx={{ pt: '0', pb: '0' }}>
-        <Typography variant='h6'>{title ? title : "unnamed"}</Typography>
+        <Typography variant='h6' align='justify' sx={{display: 'flex', width: '100%', justifyContent: 'space-between', mb: '-5px'}} >
+          {title ? title : "unnamed"}
+          <Link to={`/edit/${_id}`}>
+            <Tooltip title="Редактировать">
+              <EditIcon color='primary' sx={{mt: '5px', mr: '-10px'}} />
+            </Tooltip>
+          </Link>
+        </Typography>
         <Typography variant='body2'>Автор: {owner.login}</Typography>
         {price ? <Typography sx={{ mt: '1rem' }} variant='body2'>Цена: <strong>{price} грн</strong></Typography>
           : <Typography sx={{ mt: '1rem' }} variant='body2'>Цена не указана</Typography>}

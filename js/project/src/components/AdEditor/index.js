@@ -1,10 +1,10 @@
+import { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { useState } from 'react';
+import { actionAdById, actionSaveAd } from '../../actions';
+import CMyDropzoneForAds from '../DropeZoneForAds';
 import store from '../../reducers';
-import { actionNewAd } from "../../actions";
 import { history } from '../../App';
 import { Button, TextField, Box, Container, Typography } from '@mui/material/';
-import CMyDropzoneForAds from '../DropeZoneForAds';
 import { sortableContainer, sortableElement } from 'react-sortable-hoc';
 import { arrayMoveImmutable } from 'array-move'
 
@@ -16,14 +16,27 @@ const SortableContainer = sortableContainer(({children}) => {
     return <ul style={{ display: 'flex', flexDirection: 'column', paddingLeft: '0', marginTop: '0' }}>{children}</ul>;
 });
 
-const NewAd = ({ onAdd }) => { 
-    const [title, setTitle] = useState('')
-    const [description, setDescription] = useState('')
-    const [address, setAddress] = useState('')
-    const [price, setPrice] = useState(0)
-    const [img, setImg] = useState([])
+const AdEditor = ({ match: { params: { _id } }, getData}) => { 
+    useEffect(() => {
+        getData(_id)
+    }, [_id])
+    return (
+        <>
+            <CEntityEditor />
+        </>
+    )
+}
 
-    const images = (img) => { 
+const CAdEditor = connect(null, { getData: actionAdById })(AdEditor)
+
+const EntityEditor = ({ ad: { _id, title, description, address, price, images }, onSave }) => {
+    const [newTitle, setTitle] = useState(title)
+    const [newDescription, setDescription] = useState(description)
+    const [newAddress, setAddress] = useState(address)
+    const [newPrice, setPrice] = useState(price)
+    const [img, setImg] = useState(images)
+
+    const imagesId = (img) => { 
         let myImg = img
         for (let newImg of myImg) { 
             delete newImg.url
@@ -34,10 +47,10 @@ const NewAd = ({ onAdd }) => {
     const onSortEnd = ({oldIndex, newIndex}) => {
         setImg(arrayMoveImmutable(img, oldIndex, newIndex))
     }
-    
+
     return (
         <Container sx={{ display: 'flex', justifyContent: 'center', pt: '3vh' }}>
-            {img[0] && <Box sx={{ width: '14%', textAlign: 'center', pt: '0.5rem', "&:hover": {cursor: 'pointer'} }}>
+            {img && img[0] && img[0].url && <Box sx={{ width: '14%', textAlign: 'center', pt: '0.5rem', "&:hover": {cursor: 'pointer'} }}>
                 <SortableContainer onSortEnd={onSortEnd}>
                     {img.map((image, index) =>
                         <SortableItem key={image._id} index={index} value={
@@ -46,18 +59,18 @@ const NewAd = ({ onAdd }) => {
                 </SortableContainer>
             </Box>}
             <Box sx={{ width: '43%', textAlign: 'center', pt: '0.5rem' }}>
-                {img[0] ? <img style={{ maxWidth: '90%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217' }} src={'/' + img[0].url} alt='adImg' /> :
+                {img[0].url ? <img style={{ maxWidth: '90%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217' }} src={'/' + img[0].url} alt='adImg' /> :
                 <img style={{ maxWidth: '90%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217' }} src={noImg} alt='noImg' />}
                 <CMyDropzoneForAds img={img} setImg={setImg} />
             </Box>
             <Box sx={{ pl: '1rem', width: '43%', textAlign: 'left' }}>
-                <Typography variant='h5' color='primary' sx={{ textAlign: 'center', mb: '1rem' }}>Создать объявление</Typography>
+                <Typography variant='h5' color='primary' sx={{ textAlign: 'center', mb: '1rem' }}>Редактировать объявление</Typography>
                 <TextField
                     sx={{  mb: '1rem', bgcolor: '#E9DFC4', borderRadius: '4px' }}
                     fullWidth={true}
                     label="Название"
                     onChange={e => {setTitle(e.target.value)}}
-                    // value={title}
+                    value={newTitle}
                 />
                 <TextField
                     sx={{ mb: '1rem', bgcolor: '#E9DFC4', borderRadius: '4px' }}
@@ -66,39 +79,38 @@ const NewAd = ({ onAdd }) => {
                     multiline={true}
                     minRows={4}
                     onChange={e => {setDescription(e.target.value)}}
-                    // value={description}
+                    value={newDescription}
                 />
                 <TextField
                     sx={{ width: '48.5%', mb: '1rem', mr: '3%', bgcolor: '#E9DFC4', borderRadius: '4px' }}
                     fullWidth={true}
                     label="Адрес"
                     onChange={e => {setAddress(e.target.value)}}
-                    // value={description}
+                    value={newAddress}
                 />
                 <TextField
                     sx={{ width: '48.5%', mb: '1rem', bgcolor: '#E9DFC4', borderRadius: '4px' }}   
                     label="Цена"
                     type="number"
                     onChange={e => {setPrice(+e.target.value)}}
-                    // value={price}
+                    value={newPrice}
                 />
                 <Button
                     fullWidth={true}
                     sx={{ bgcolor: 'primary', "&:hover": { bgcolor: 'secondary', opacity: '0.7' }, height: '3.5rem' }} variant='contained'
                     onClick={() => { 
-                            onAdd(images(img), title, description, address, price)
+                            onSave(_id, imagesId(img), newTitle, newDescription, newAddress, newPrice)
                             history.push(`/ads/${store.getState().authReducer.payload.sub.id}`)
                         }
                     }
                 >
-                    Опубликовать
+                    Сохранить
                 </Button>
             </Box>
         </Container>
     )
 }
-    
-         
-const СNewAd = connect(null, { onAdd: actionNewAd })(NewAd)
 
-export default СNewAd;
+const CEntityEditor = connect(state => ({ad: state.promiseReducer.adById?.payload || []}), {onSave: actionSaveAd})(EntityEditor)
+
+export default CAdEditor

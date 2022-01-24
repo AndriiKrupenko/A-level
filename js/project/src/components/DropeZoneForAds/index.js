@@ -1,13 +1,15 @@
-import React, { useCallback, useMemo } from 'react';
+import { ColorLensOutlined } from '@mui/icons-material';
+import React, { useRef, useEffect, useCallback, useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { connect } from 'react-redux';
-import { actionUploadFile } from '../../actions';
+import { actionUploadFiles } from '../../actions';
+import store from '../../reducers';
 
 const baseStyle = {
   flex: 1,
   display: 'flex',
   flexDirection: 'column',
-  width: '74%',
+  width: '80%',
   alignItems: 'center',
   marginTop: '20px',
   marginLeft: 'auto',
@@ -35,23 +37,22 @@ const rejectStyle = {
   borderColor: 'red'
 };
 
-function MyDropzoneForAds({ setImg, onLoad, fav }) {
+function MyDropzoneForAds({ img, setImg, onLoad, fileStatus }) {
 
-  let imagesToAd = []
+  const checkRef = useRef(0)
+
+  useEffect(() => {
+    if (!checkRef.current) { 
+    } else if (fileStatus.status === 'RESOLVED') { 
+        setImg([...img, ...fileStatus.payload])
+    }
+    checkRef.current++
+    }, [fileStatus.status])
 
   const onDrop = useCallback(acceptedFiles => {
         // Do something with the files
-    acceptedFiles.map(async file => await (onLoad(file).promise.then(res => imagesToAd.push(res))))
-    
-    setImg(imagesToAd)
+    onLoad(acceptedFiles)
   }, [])
-  
-  // const onDrop = useCallback(acceptedFiles => {
-  //       // Do something with the files
-  //   acceptedFiles.map(async file => await (onLoad(file).promise.then(res => imagesToAd.push(res))))
-    
-  //   setImg(imagesToAd)
-  //   }, [])
 
   const {
     acceptedFiles,
@@ -84,7 +85,7 @@ function MyDropzoneForAds({ setImg, onLoad, fav }) {
     <section className="container">
       <div {...getRootProps({className: 'dropzone', style})}>
         <input {...getInputProps()} />
-        <p>Перетащите изображения в область для загрузки или нажмите, чтобы выбрать.</p>
+        <p>Переместите изображения в область для загрузки или нажмите, чтобы выбрать.</p>
       </div>
       {/* <aside>
         <h4>Files</h4>
@@ -95,6 +96,6 @@ function MyDropzoneForAds({ setImg, onLoad, fav }) {
   );
 }
 
-const CMyDropzoneForAds = connect(null, {onLoad: actionUploadFile})(MyDropzoneForAds)
+const CMyDropzoneForAds = connect(state => ({ fileStatus: state.promiseReducer.photos || {}}), {onLoad: actionUploadFiles})(MyDropzoneForAds)
         
 export default CMyDropzoneForAds

@@ -28,6 +28,18 @@ export const actionRejected = (name, error) => ({ type: 'PROMISE', status: 'REJE
 
 export const actionPromise = (name, promise) => ({ type: 'PROMISE_START', name, promise })
 
+export const actionSaveUser = (_id, nick, phones, addresses) =>
+    actionPromise('newAd', gql(`mutation saveUser($_id: String, $nick: String, $phones: [String], $addresses: [String]){
+        UserUpsert(user: {
+                _id: $_id
+                nick: $nick,
+                phones: $phones, 
+                addresses: $addresses,
+            }){
+                    _id 
+                }
+    }`, { _id, nick, phones, addresses }))
+
 
 export const actionMyAds = (_id) =>
     actionPromise('myAds', gql(`query myAds($query: String){
@@ -44,6 +56,21 @@ export const actionMyAds = (_id) =>
         }
     }`, { query: JSON.stringify([{ ___owner: _id }]) }))
 
+export const actionSaveAd = (_id, img, title, description, address, price) =>
+    actionPromise('newAd', gql(`mutation saveAd($_id: ID, $img: [ImageInput], $title: String, $description: String, $address: String, $price: Float){
+        AdUpsert(ad: {
+            _id: $_id
+            images: $img,
+            title:$title, 
+            description: $description,
+            address: $address,
+            price:$price}){
+                    title,
+                    description, 
+                    address,
+                    price, 
+                }
+    }`, { _id, img, title, description, address, price }))
 
 export const actionNewAd = (img, title, description, address, price) =>
     actionPromise('newAd', gql(`mutation newAd($img: [ImageInput], $title: String, $description: String, $address: String, $price: Float){
@@ -66,14 +93,23 @@ export const actionFeedClear = () => ({ type: 'FEED_CLEAR' })
 export const actionSearch = text => ({type: 'SEARCH', text})
 export const actionSearchResult = (payload) => ({ type: 'SEARCH_RESULT', payload })
 
-export const actionUploadFile = (file) => {
+
+export const uploadFile = (file) => {
     let fd = new FormData
     fd.append('photo', file)
-    return actionPromise('photo', fetch('/upload', {
+    return fetch('/upload', {
             method: 'POST',
             headers: localStorage.authToken ? { "Authorization": "Bearer " + localStorage.authToken } : {},
             body: fd
-    }).then(res => res.json()))
+    }).then(res => res.json())
+}
+
+export const actionUploadFile = (file) => {
+    return actionPromise('photo', uploadFile(file))
+}
+
+export const actionUploadFiles = (files) => {
+    return actionPromise('photos', Promise.all(files.map(uploadFile)))
 }
 
 // export const actionSetAdImg = file => ({ type: 'SET_AD_IMG', file })
@@ -99,6 +135,8 @@ export const actionAboutMe = () =>
                     _id,
                     url
                 },
+                phones,
+                addresses,
                 createdAt,
             }
         }`, { query: JSON.stringify([{ _id: store.getState().authReducer.payload.sub.id }])  }))
@@ -129,6 +167,7 @@ export const actionAdById = (_id) =>
               login
             },
             images {
+              _id,
               url
             },
             comments {
