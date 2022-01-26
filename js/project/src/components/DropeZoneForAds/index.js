@@ -9,7 +9,7 @@ const baseStyle = {
   flex: 1,
   display: 'flex',
   flexDirection: 'column',
-  width: '80%',
+  width: '86%',
   alignItems: 'center',
   marginTop: '20px',
   marginLeft: 'auto',

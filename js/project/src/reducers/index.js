@@ -111,7 +111,9 @@ function feedReducer(state = [], { type, ads }) {
 
 const sagaMiddleware = createSagaMiddleware()
 
-const store = createStore(combineReducers({ promiseReducer: localStoredReducer(promiseReducer, 'forPromiseReducer'), authReducer: authReducer, favoriteReducer: localStoredReducer(favoriteReducer, 'favorite'), searchReducer: searchReducer, feedReducer: localStoredReducer(feedReducer, 'feedReducer') }), applyMiddleware(sagaMiddleware))
+const store = createStore(combineReducers({ promiseReducer: promiseReducer, authReducer: authReducer, favoriteReducer: localStoredReducer(favoriteReducer, 'favorite'), searchReducer: searchReducer, feedReducer: localStoredReducer(feedReducer, 'feedReducer') }), applyMiddleware(sagaMiddleware))
+
+// const store = createStore(combineReducers({ promiseReducer: localStoredReducer(promiseReducer, 'forPromiseReducer'), authReducer: authReducer, favoriteReducer: localStoredReducer(favoriteReducer, 'favorite'), searchReducer: searchReducer, feedReducer: localStoredReducer(feedReducer, 'feedReducer') }), applyMiddleware(sagaMiddleware))
 
 const actionFeedClearStart = () => ({ type: 'FEED_CLEAR_START' })
 

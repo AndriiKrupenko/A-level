@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import { actionAdById, actionSaveAd } from '../../actions';
 import CMyDropzoneForAds from '../DropeZoneForAds';
@@ -20,6 +20,7 @@ const AdEditor = ({ match: { params: { _id } }, getData}) => {
     useEffect(() => {
         getData(_id)
     }, [_id])
+    
     return (
         <>
             <CEntityEditor />
@@ -29,12 +30,26 @@ const AdEditor = ({ match: { params: { _id } }, getData}) => {
 
 const CAdEditor = connect(null, { getData: actionAdById })(AdEditor)
 
-const EntityEditor = ({ ad: { _id, title, description, address, price, images }, onSave }) => {
+const EntityEditor = ({ ad: { _id, title, description, address, price, images }, status, onSave }) => {
     const [newTitle, setTitle] = useState(title)
     const [newDescription, setDescription] = useState(description)
     const [newAddress, setAddress] = useState(address)
     const [newPrice, setPrice] = useState(price)
     const [img, setImg] = useState(images)
+
+    const checkRef = useRef(0)
+
+    useEffect(() => {
+        if (!checkRef.current) { 
+        } else if (status.status === 'RESOLVED') { 
+            setTitle(status.payload.title)
+            setDescription(status.payload.description)  
+            setAddress(status.payload.address)
+            setPrice(status.payload.price)
+            setImg(status.payload.images)
+        }
+        checkRef.current++
+    }, [status.status])
 
     const imagesId = (img) => { 
         let myImg = img
@@ -50,17 +65,19 @@ const EntityEditor = ({ ad: { _id, title, description, address, price, images },
 
     return (
         <Container sx={{ display: 'flex', justifyContent: 'center', pt: '3vh' }}>
-            {img && img[0] && img[0].url && <Box sx={{ width: '14%', textAlign: 'center', pt: '0.5rem', "&:hover": {cursor: 'pointer'} }}>
+            {img && img[0] && img[0].url && <Box sx={{ width: '14%', backgroundColor: '#E9DFC4', border: '3px solid #402217', borderRadius: '10px', textAlign: 'center', pl: '0.8rem', pt: '0.2rem', pb: '0.8rem', mt: '0.5rem', mr: '1rem', "&:hover": {cursor: 'pointer'} }}>
                 <SortableContainer onSortEnd={onSortEnd}>
                     {img.map((image, index) =>
                         <SortableItem key={image._id} index={index} value={
-                            <img style={{ maxWidth: '90%', maxHeight: '15vh', borderRadius: '10px', border: '5px solid #402217', marginTop: '0.8rem' }} src={'/' + image.url} alt='adImg' />
+                            <img style={{ maxWidth: '90%', maxHeight: '15vh', borderRadius: '10px', boxShadow: '3px 3px 3px #402217', marginTop: '0.8rem' }} src={'/' + image.url} alt='adImg' />
                         } />)}
                 </SortableContainer>
             </Box>}
             <Box sx={{ width: '43%', textAlign: 'center', pt: '0.5rem' }}>
-                {img[0].url ? <img style={{ maxWidth: '90%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217' }} src={'/' + img[0].url} alt='adImg' /> :
+                <Box sx={{ backgroundColor: '#E9DFC4', border: '3px solid #402217', borderRadius: '10px', pt: '1rem', pb: '1rem' }}>
+                {(img && img[0] && img[0].url) ? <img style={{ maxWidth: '90%', maxHeight: '35vh', borderRadius: '10px', boxShadow: '3px 3px 3px #402217' }} src={'/' + img[0].url} alt='adImg' /> :
                 <img style={{ maxWidth: '90%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217' }} src={noImg} alt='noImg' />}
+                </Box>
                 <CMyDropzoneForAds img={img} setImg={setImg} />
             </Box>
             <Box sx={{ pl: '1rem', width: '43%', textAlign: 'left' }}>
@@ -97,7 +114,8 @@ const EntityEditor = ({ ad: { _id, title, description, address, price, images },
                 />
                 <Button
                     fullWidth={true}
-                    sx={{ bgcolor: 'primary', "&:hover": { bgcolor: 'secondary', opacity: '0.7' }, height: '3.5rem' }} variant='contained'
+                    sx={{ bgcolor: 'primary', "&:hover": { bgcolor: 'secondary', opacity: '0.7' }, height: '3.5rem' }}
+                    variant='contained'
                     onClick={() => { 
                             onSave(_id, imagesId(img), newTitle, newDescription, newAddress, newPrice)
                             history.push(`/ads/${store.getState().authReducer.payload.sub.id}`)
@@ -111,6 +129,6 @@ const EntityEditor = ({ ad: { _id, title, description, address, price, images },
     )
 }
 
-const CEntityEditor = connect(state => ({ad: state.promiseReducer.adById?.payload || []}), {onSave: actionSaveAd})(EntityEditor)
+const CEntityEditor = connect(state => ({ad: state.promiseReducer.adById?.payload || [], status: state.promiseReducer.adById || {}}), {onSave: actionSaveAd})(EntityEditor)
 
 export default CAdEditor
