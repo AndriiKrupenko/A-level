@@ -1,7 +1,7 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { all, put, takeEvery, call, takeLatest, select } from 'redux-saga/effects';
-import { actionPromise, actionPending, actionResolved, actionRejected, actionLogin, actionAuthLogin, actionRegister, actionUploadFile, actionAvatar, actionAllAds, actionAboutMe, actionSearchResult, gql } from "../actions"
+import { actionPromise, actionPending, actionResolved, actionRejected, actionLogin, actionAuthLogin, actionRegister, actionUploadFile, actionAvatar, actionAllAds, actionAboutMe, actionSearchResult, actionAdById, gql } from "../actions"
 
 import { history } from '../App';
 
@@ -114,6 +114,19 @@ const sagaMiddleware = createSagaMiddleware()
 const store = createStore(combineReducers({ promiseReducer: promiseReducer, authReducer: authReducer, favoriteReducer: localStoredReducer(favoriteReducer, 'favorite'), searchReducer: searchReducer, feedReducer: localStoredReducer(feedReducer, 'feedReducer') }), applyMiddleware(sagaMiddleware))
 
 // const store = createStore(combineReducers({ promiseReducer: localStoredReducer(promiseReducer, 'forPromiseReducer'), authReducer: authReducer, favoriteReducer: localStoredReducer(favoriteReducer, 'favorite'), searchReducer: searchReducer, feedReducer: localStoredReducer(feedReducer, 'feedReducer') }), applyMiddleware(sagaMiddleware))
+
+function* commentWorker({ _id, text }) {
+    yield call(promiseWorker, actionPromise('addComment', gql(`mutation addComment($_id: ID, $text: String){
+        CommentUpsert(comment: {ad: {_id: $_id}, text: $text}){
+                    _id 
+                }
+            }`, { _id, text })))
+    yield put(actionAdById(_id))  
+}
+
+function* commentWatcher() { 
+    yield takeEvery('NEW_COMMENT', commentWorker)
+}
 
 const actionFeedClearStart = () => ({ type: 'FEED_CLEAR_START' })
 
@@ -260,7 +273,8 @@ function* rootSaga() {
         setAvatarWatcher(),
         searchWatcher(),
         feedWatcher(),
-        feedClearWatcher()
+        feedClearWatcher(),
+        commentWatcher()
     ])
 }
 

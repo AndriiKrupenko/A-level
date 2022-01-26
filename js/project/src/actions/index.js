@@ -29,12 +29,14 @@ export const actionRejected = (name, error) => ({ type: 'PROMISE', status: 'REJE
 export const actionPromise = (name, promise) => ({ type: 'PROMISE_START', name, promise })
 
 
-export const actionAddComment = (_id, text) =>
-    actionPromise('addComment', gql(`mutation addComment($_id: ID, $text: String){
-        CommentUpsert(comment: {ad: {_id: $_id}, text: $text}){
-                    _id 
-                }
-            }`, { _id, text }))
+// export const actionAddComment = (_id, text) =>
+//     actionPromise('addComment', gql(`mutation addComment($_id: ID, $text: String){
+//         CommentUpsert(comment: {ad: {_id: $_id}, text: $text}){
+//                     _id 
+//                 }
+//             }`, { _id, text }))
+
+export const actionAddComment = (_id, text) => ({ type: 'NEW_COMMENT', _id, text })
 
 export const actionSaveUser = (_id, nick, phones, addresses) =>
     actionPromise('newAd', gql(`mutation saveUser($_id: String, $nick: String, $phones: [String], $addresses: [String]){

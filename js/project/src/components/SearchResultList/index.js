@@ -1,23 +1,42 @@
+import { useState, useEffect, useRef } from 'react';
 import { List, ListItem, Divider, ListItemText, ListItemAvatar, Avatar, Typography, Button } from '@mui/material/';
 import { Box } from '@mui/system';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import noImg from '../../no-img.png'
 
+
 function SearchResultList({ searchResult, searchValue, clearSearchValue }) {
-    // console.log(searchResult)
+    const ref = useRef(null);
+    const [isOpen, setIsOpen] = useState(null)
+
+    const handleClickOutside = (event) => {
+        if (ref.current && !ref.current.contains(event.target)) {
+            setIsOpen(false);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('click', handleClickOutside, true);
+        setIsOpen(true)
+        return () => {
+            document.removeEventListener('click', handleClickOutside, true);
+        };
+    }, [searchValue]);
+
     return (
-        <Box sx={{overflow: 'auto'}}>
-            { searchResult && searchValue &&
+        <Box sx={{ overflow: 'auto' }} ref={ref}>
+            
+            { isOpen && searchResult && searchValue && 
             <List sx={{ position: 'absolute', width: 'calc(100% - 4px)', bgcolor: '#E9DFC4', border: '2px solid #290302', borderRadius: '5px' }} style={{maxHeight: '80vh', overflow: 'auto'}}>
                 {searchResult[0] ? searchResult.reverse().map(item => 
-                    <>
+                    <Box key={item._id}>
                         <Link
                             style={{ textDecoration: 'none' }}
                             to={`/ad/${item._id}`}
                             onClick={() => clearSearchValue()}
                         >
-                            <ListItem alignItems="flex-start" key={item._id}>
+                            <ListItem alignItems="flex-start">
                                 <ListItemAvatar>
                                     { item?.images?.[0]?.url ? <Avatar alt={item?.title} src={'/' + item?.images?.[0]?.url} /> : <Avatar alt={item?.title} src={noImg} />}
                                 </ListItemAvatar>
@@ -48,7 +67,7 @@ function SearchResultList({ searchResult, searchValue, clearSearchValue }) {
                             </ListItem>
                         </Link>
                         <Divider sx={{ mr: '2%'}} variant="inset" component="li" />
-                    </>
+                    </Box>
                     ) : 
                     <ListItem alignItems="flex-start">
                         <Typography

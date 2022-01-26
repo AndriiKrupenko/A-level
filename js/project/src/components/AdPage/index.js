@@ -70,16 +70,18 @@ const AdPageCard = ({ ad: { _id, title, images, description, price, createdAt, a
                         multiline={true}
                         minRows={1}
                         label="Оставьте комментарий"
-                        onChange={e => {setComment(e.target.value)}}
+                        onChange={e => { setComment(e.target.value) }}
+                        value={comment}
                     />
-                    <Button sx={{ bgcolor: 'primary', "&:hover": { bgcolor: 'secondary', opacity: '0.7' }, height: '3.4rem', mb: '1.1rem', ml: '1rem' }} variant='contained' onClick={() => addComment(_id, comment)}>Добавить комментарий</Button>
+                    <Button sx={{ bgcolor: 'primary', "&:hover": { bgcolor: 'secondary', opacity: '0.7' }, height: '3.4rem', mb: '1.1rem', ml: '1rem' }} variant='contained' onClick={() => { addComment(_id, comment); setComment('') }}>Добавить комментарий</Button>
                 </Box>
                 
                 {comments && comments[0] && comments[0].text &&
                     <Box sx={{ width: '100%', backgroundColor: '#E9DFC4', border: '3px solid #402217', borderRadius: '10px', p: '1rem 1rem 0.2rem 1rem' }}>
                         <Typography variant='h6' paragraph={true} sx={{ ml: '0', mt: '0.2rem' }}>Комментарии:</Typography>
-                        {comments && comments[0] && comments[0].text && comments.reverse().map(comment =>
-                            <Box key={comments._id} sx={{ display: 'flex', flexWrap: 'wrap', width: '100%', mb: '1rem' }}>
+                        <Box sx={{display: 'flex', flexDirection: 'column-reverse', flexWrap: 'wrap'}}>
+                        {comments && comments[0] && comments[0].text && comments.map(comment =>
+                            <Box key={comments.comment._id} sx={{ display: 'flex', flexWrap: 'wrap', width: '100%', mb: '1rem' }}>
                                 <Box sx={{ width: '18%', overflow: 'hidden' }}>
                                     <Typography variant='body1' paragraph={true}>{comment.owner.login}:</Typography>
                                 </Box>
@@ -88,6 +90,7 @@ const AdPageCard = ({ ad: { _id, title, images, description, price, createdAt, a
                                 </Box>
                             </Box>
                         )}
+                        </Box>
                     </Box>
                 }
             </Box>
