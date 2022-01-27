@@ -1,7 +1,7 @@
 import { useState } from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { actionFullRegister } from '../../actions';
-import { connect } from 'react-redux';
 
 import { Container, Box, TextField, Typography, Button } from '@mui/material/';
 

@@ -2,19 +2,17 @@ import { Route, Redirect, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import CLoginForm from '../LoginForm';
 import CRegistrationForm from '../RegistrationForm';
-import CAllAdsPage from '../AllAdsPage';
-import CAdPage from '../AdPage';
-import CMyProfilePage from '../myProfile';
-import CFavorite from '../Favorite';
-import CAdEditor from '../AdEditor';
-
-import CSearchPage from '../SearchPage';
-import CNewAd from '../NewAd'
-import CMyAdsPage from '../MyAdsPage'
-import CProfileEditor from '../ProfileEditor'
+import CAllAdsPage from '../../pages/AllAdsPage';
+import CAdPage from '../../pages/AdPage';
+import CMyProfilePage from '../../pages/myProfile';
+import CFavorite from '../../pages/Favorite';
+import CAdEditor from '../../pages/AdEditor';
+import CSearchPage from '../../pages/SearchPage';
+import CNewAd from '../../pages/NewAd'
+import CMyAdsPage from '../../pages/MyAdsPage'
+import CProfileEditor from '../../pages/ProfileEditor'
 
 import { Container, Typography } from '@mui/material';
-
 
 const PageMain = () => 
   <>

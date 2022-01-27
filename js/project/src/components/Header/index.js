@@ -1,15 +1,20 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import AccountMenu from '../AccountMenu';
+import CAccountMenu from '../AccountMenu';
 import CMySearch from '../Search';
-import { Logo } from '../../App';
+import logo from '../../logo.png';
 
-import { AppBar, Box, Toolbar, IconButton, Badge, Tooltip, Typography } from '@mui/material'
+import { AppBar, Box, Toolbar, IconButton, Badge, Tooltip, Typography } from '@mui/material';
 
-import MailIcon from '@mui/icons-material/Mail';
+// import MailIcon from '@mui/icons-material/Mail';
 import FavoriteIcon from '@mui/icons-material/Favorite'; 
 import AddIcon from '@mui/icons-material/Add';
+
+export const Logo = () =>
+  <Link to="/" >
+    <img src={logo} style={{maxHeight: '10vh'}} alt="logo" />
+  </Link>
 
 const Header = ({ token, favorite }) => 
   <AppBar>
@@ -53,14 +58,12 @@ const Header = ({ token, favorite }) =>
               </IconButton>
             </Tooltip>
           </Box>
-          <AccountMenu />
+          <CAccountMenu />
         </>
-        : <AccountMenu />}
+        : <CAccountMenu />}
     </Toolbar>
   </AppBar> 
 
-  
-    
 const СHeader = connect(state => ({ token: state.authReducer.token, favorite: state.favoriteReducer }))(Header)
 
 export default СHeader;

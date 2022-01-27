@@ -1,5 +1,7 @@
 import store from '../reducers';
 
+export const backURL = 'http://marketplace.asmer.fs.a-level.com.ua'
+
 const getGQL = url =>
     (query, variables = {}) =>
         fetch(url, {
@@ -18,7 +20,7 @@ const getGQL = url =>
                     return data.data[Object.keys(data.data)[0]]
                 })
     
-export const gql = getGQL(`/graphql`)
+export const gql = getGQL(`${backURL}/graphql`)
 
 
 //---------------for-promiseReducer--------------------------------------------------------------
@@ -27,14 +29,6 @@ export const actionResolved = (name, payload) => ({ type: 'PROMISE', status: 'RE
 export const actionRejected = (name, error) => ({ type: 'PROMISE', status: 'REJECTED', name, error })
 
 export const actionPromise = (name, promise) => ({ type: 'PROMISE_START', name, promise })
-
-
-// export const actionAddComment = (_id, text) =>
-//     actionPromise('addComment', gql(`mutation addComment($_id: ID, $text: String){
-//         CommentUpsert(comment: {ad: {_id: $_id}, text: $text}){
-//                     _id 
-//                 }
-//             }`, { _id, text }))
 
 export const actionAddComment = (_id, text) => ({ type: 'NEW_COMMENT', _id, text })
 
@@ -107,7 +101,7 @@ export const actionSearchResult = (payload) => ({ type: 'SEARCH_RESULT', payload
 export const uploadFile = (file) => {
     let fd = new FormData
     fd.append('photo', file)
-    return fetch('/upload', {
+    return fetch((backURL + '/upload'), {
             method: 'POST',
             headers: localStorage.authToken ? { "Authorization": "Bearer " + localStorage.authToken } : {},
             body: fd
@@ -121,8 +115,6 @@ export const actionUploadFile = (file) => {
 export const actionUploadFiles = (files) => {
     return actionPromise('photos', Promise.all(files.map(uploadFile)))
 }
-
-// export const actionSetAdImg = file => ({ type: 'SET_AD_IMG', file })
 
 export const actionAvatar = (myId, _id) =>
     actionPromise('setAvatar', gql(`mutation setAvatar($myId: String, $_id: ID){
@@ -168,7 +160,6 @@ export const actionAllAds = () =>
     }`, { query: JSON.stringify([ {},{ sort: [{ _id: -1 }] }]) }
     ))
         
-
 export const actionAdById = (_id) => 
     actionPromise('adById', gql(`query adById($query: String){
         AdFindOne(query:$query){
@@ -213,7 +204,7 @@ export const actionUserById = (_id) =>
 
 
 //---------------for-authReducer-----------------------------------------------------------------
-export const actionAuthLogin  = token => ({type: 'AUTH_LOGIN', token})
+export const actionAuthLogin  = token => ({type: 'AUTH_LOGIN', token}) 
 export const actionAuthLogout = () => ({ type: 'AUTH_LOGOUT' })
 
 export const actionLogin = (login, password) =>

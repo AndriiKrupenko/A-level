@@ -1,33 +1,33 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Grid, Card, CardMedia, CardContent, Typography, CardActions, Button, IconButton, Tooltip, Box } from '@mui/material';
-import { actionFavoriteAdd, actionFavoriteRemove, actionFeedStart, actionFeedClear } from '../../actions';
-import CPromisePreloader from '../PromisePreloader';
+import { actionFavoriteAdd, actionFavoriteRemove, actionSearch, backURL } from '../../actions';
+
+import { Grid, Card, CardMedia, CardContent, CardActions, Button, IconButton, Typography, Tooltip } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 import noImg from '../../no-img.png';
 
-const AllAdsPage = ({ initialFeed, clearFeed }) => { 
+const SearchPage = ({ match: { params: { searchText } }, getData}) => { 
     useEffect(() => {
-      initialFeed()
-      return () => clearFeed()
-    }, [])
+        getData(searchText)
+    }, [searchText])
     return (
         <>
-            <CAllAds />
+            <CSearchPageInit />
         </>
     )
 }
 
-const CAllAdsPage = connect(null, { initialFeed: actionFeedStart, clearFeed: actionFeedClear })(AllAdsPage)
+const CSearchPage = connect(null, { getData: actionSearch })(SearchPage)
 
-const Ad = ({ _id, owner, images, title, price, fav, onAdd, onRemove}) =>
-  <Grid item xs={12} md={3} sx={{bgcolor: 'secondary'}}>
-    <Card sx={{ height: "100%", borderRadius: 3, boxShadow: '3px 3px 3px #402217' }}>
+
+const SearchAd = ({ _id, owner, images, title, price, fav, onAdd, onRemove}) =>
+  <Grid item xs={12} md={3}>
+    <Card sx={{ height: "100%", borderRadius: 3, boxShadow: '3px 3px 3px gray' }}>
       <Link to={`/ad/${_id}`}>
-        {images && images[0] && images[0].url ? <CardMedia component="img" sx={{height: 200}} image={'/' + images[0].url} alt='adImg' /> : <CardMedia component="img" sx={{height: 200}} image={noImg} alt='noImg' />}
+        {images && images[0] && images[0].url ? <CardMedia component="img" sx={{height: 200}} image={`${backURL}/` + images[0].url} alt='adImg' /> : <CardMedia component="img" sx={{height: 200}} image={noImg} alt='noImg' />}
       </Link>
       <CardContent sx={{ pt: '0', pb: '0' }}>
         <Typography variant='h6'>{title ? title : "unnamed"}</Typography>
@@ -60,25 +60,20 @@ const Ad = ({ _id, owner, images, title, price, fav, onAdd, onRemove}) =>
               </IconButton>
             </Tooltip>
           }
-        
       </CardActions>
     </Card>
   </Grid>
 
-export const CAd = connect(state => ({ fav: state.favoriteReducer }), { onAdd: actionFavoriteAdd, onRemove: actionFavoriteRemove })(Ad)
+export const CSearchAd = connect(state => ({ fav: state.favoriteReducer }), { onAdd: actionFavoriteAdd, onRemove: actionFavoriteRemove })(SearchAd)
 
-const AllAds = ({ ads, newFeed }) =>
-  <>
+
+const SearchPageInit = ({ searchResult }) =>
+    <> 
+    <Typography sx={{textAlign: "center", pt: "1rem", pb: "1rem"}} variant='h4'>Результаты поиска</Typography>
     <Grid container spacing={3}>
-      {ads.map((item) => <CAd {...item} key={Math.random()}/> )}
+      {Object.values(searchResult).reverse().map((item) => <CSearchAd {...item} key={item._id}/> )}
     </Grid>
-    <CPromisePreloader name='feedAds'>
-      <Box sx={{ width: '100%', textAlign: 'center', mt: '2rem' }}>
-        <Button onClick={() => newFeed()} sx={{ bgcolor: 'primary', "&:hover": {bgcolor: 'secondary', opacity: '0.7'} }} variant='contained'>Загрузить ещё...</Button>
-      </Box>
-    </CPromisePreloader>
   </>
+const CSearchPageInit = connect(state => ({searchResult: state.searchReducer.searchResult?.payload.payload || []}))(SearchPageInit)
 
-const CAllAds = connect(state => ({ads: state.feedReducer || []}), { newFeed: actionFeedStart })(AllAds)
-
-export default CAllAdsPage;
+export default CSearchPage;

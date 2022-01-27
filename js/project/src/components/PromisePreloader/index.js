@@ -1,7 +1,8 @@
-import { connect } from 'react-redux';
 import React from 'react';
+import { connect } from 'react-redux';
+import CircularIndeterminate from '../Progress';
+
 import { Typography } from '@mui/material';
-import CircularIndeterminate from '../Progress'
 
 function PromisePreloader({ children, name, reduxPromises }) {
     

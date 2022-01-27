@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { actionAboutMe, actionSaveUser } from '../../actions';
-import CMyDropzone from '../DropeZone';
+import { actionAboutMe, actionSaveUser, backURL } from '../../actions';
+import CMyDropzone from '../../components/DropeZone';
 import { history } from '../../App';
-import { Button, TextField, Box, Container, Typography, Divider, Avatar } from '@mui/material/';
+
+import { Button, TextField, Box, Container, Typography, Avatar } from '@mui/material/';
 
 import noImg from '../../no-img.png';
 
@@ -29,7 +30,7 @@ const EntityEditor = ({ me: { _id, nick, avatar, phones, addresses }, onSave }) 
     return (
         <Container sx={{display: 'flex', pt: '3vh', justifyContent: 'center'}}>
             <Box sx={{ display: 'flex', width: '25%', textAlign: 'center' }}>
-                {avatar && avatar.url ? <Avatar alt="Мой аватар" variant='circular' src={'/' + avatar.url} sx={{width: '30vh', height: '30vh', mr: '-1rem'}}/> : <Avatar alt="Мой аватар" src={noImg} sx={{width: '30vh', height: '30vh', mr: '-1rem'}} />}
+                {avatar && avatar.url ? <Avatar alt="Мой аватар" variant='circular' src={`${backURL}/` + avatar.url} sx={{width: '30vh', height: '30vh', mr: '-1rem'}}/> : <Avatar alt="Мой аватар" src={noImg} sx={{width: '30vh', height: '30vh', mr: '-1rem'}} />}
                 <CMyDropzone />
             </Box>
             <Box sx={{ pl: '1rem', width: '40%', textAlign: 'left' }}>

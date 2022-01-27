@@ -1,8 +1,7 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { all, put, takeEvery, call, takeLatest, select } from 'redux-saga/effects';
-import { actionPromise, actionPending, actionResolved, actionRejected, actionLogin, actionAuthLogin, actionRegister, actionUploadFile, actionAvatar, actionAllAds, actionAboutMe, actionSearchResult, actionAdById, gql } from "../actions"
-
+import { actionPromise, actionPending, actionResolved, actionRejected, actionLogin, actionAuthLogin, actionRegister, actionUploadFile, actionAvatar, actionAllAds, actionAboutMe, actionSearchResult, actionAdById, gql } from "../actions";
 import { history } from '../App';
 
 const delay = ms => new Promise(ok => setTimeout(() => ok(ms), ms))
@@ -18,6 +17,8 @@ function jwtDecode(token) {
         return false
     }
 }
+
+//-----------------------reducers-------------------------
 
 const localStoredReducer = (reducer, localStorageName) => 
     (state, action) => { 
@@ -111,10 +112,14 @@ function feedReducer(state = [], { type, ads }) {
 
 const sagaMiddleware = createSagaMiddleware()
 
-const store = createStore(combineReducers({ promiseReducer: promiseReducer, authReducer: authReducer, favoriteReducer: localStoredReducer(favoriteReducer, 'favorite'), searchReducer: searchReducer, feedReducer: localStoredReducer(feedReducer, 'feedReducer') }), applyMiddleware(sagaMiddleware))
+const store = createStore(combineReducers({ promiseReducer: promiseReducer, authReducer: authReducer, favoriteReducer: localStoredReducer(favoriteReducer, 'favorite'), searchReducer: searchReducer, feedReducer: feedReducer }), applyMiddleware(sagaMiddleware))
 
+// ----------- old store version (with localStoredReducer for promiseReducer and feedReducer)---------------
 // const store = createStore(combineReducers({ promiseReducer: localStoredReducer(promiseReducer, 'forPromiseReducer'), authReducer: authReducer, favoriteReducer: localStoredReducer(favoriteReducer, 'favorite'), searchReducer: searchReducer, feedReducer: localStoredReducer(feedReducer, 'feedReducer') }), applyMiddleware(sagaMiddleware))
 
+
+
+// --------------------------Saga----------------------------
 function* commentWorker({ _id, text }) {
     yield call(promiseWorker, actionPromise('addComment', gql(`mutation addComment($_id: ID, $text: String){
         CommentUpsert(comment: {ad: {_id: $_id}, text: $text}){
@@ -218,7 +223,7 @@ function* registerWorker({ login, password }) {
             yield put(actionAuthLogin(token))
             yield put(actionAllAds())
             yield put(actionAboutMe())
-            history.push('/')
+            yield history.push('/')
         }
     } 
 } 
@@ -235,7 +240,7 @@ function* loginWorker({ login, password }) {
         yield put(actionAuthLogin(token))
         yield put(actionAllAds())
         yield put(actionAboutMe())
-        history.push('/')
+        yield history.push('/')
     } 
 } 
 

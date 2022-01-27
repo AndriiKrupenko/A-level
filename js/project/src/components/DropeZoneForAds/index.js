@@ -1,9 +1,7 @@
-import { ColorLensOutlined } from '@mui/icons-material';
 import React, { useRef, useEffect, useCallback, useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { connect } from 'react-redux';
 import { actionUploadFiles } from '../../actions';
-import store from '../../reducers';
 
 const baseStyle = {
   flex: 1,
@@ -50,7 +48,6 @@ function MyDropzoneForAds({ img, setImg, onLoad, fileStatus }) {
     }, [fileStatus.status])
 
   const onDrop = useCallback(acceptedFiles => {
-        // Do something with the files
     onLoad(acceptedFiles)
   }, [])
 
@@ -74,12 +71,6 @@ function MyDropzoneForAds({ img, setImg, onLoad, fileStatus }) {
     isDragReject
   ]);
 
-  // const files = acceptedFiles.map(file => (
-  //   <li key={file.path}>
-  //     {/* {file.path} - {file.size} bytes */}
-  //     {/* { console.log(file) } */}
-  //   </li>
-  // ));
 
   return (
     <section className="container">
@@ -87,11 +78,6 @@ function MyDropzoneForAds({ img, setImg, onLoad, fileStatus }) {
         <input {...getInputProps()} />
         <p>Переместите изображения в область для загрузки или нажмите, чтобы выбрать.</p>
       </div>
-      {/* <aside>
-        <h4>Files</h4>
-        <ul>{files}</ul>
-        { console.log(files)}
-      </aside> */}
     </section>
   );
 }

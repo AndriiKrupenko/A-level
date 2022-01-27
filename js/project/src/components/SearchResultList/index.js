@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { List, ListItem, Divider, ListItemText, ListItemAvatar, Avatar, Typography, Button } from '@mui/material/';
 import { Box } from '@mui/system';
 import { connect } from 'react-redux';
+import { backURL } from '../../actions';
 import { Link } from 'react-router-dom';
 import noImg from '../../no-img.png'
 
@@ -38,7 +39,7 @@ function SearchResultList({ searchResult, searchValue, clearSearchValue }) {
                         >
                             <ListItem alignItems="flex-start">
                                 <ListItemAvatar>
-                                    { item?.images?.[0]?.url ? <Avatar alt={item?.title} src={'/' + item?.images?.[0]?.url} /> : <Avatar alt={item?.title} src={noImg} />}
+                                    { item?.images?.[0]?.url ? <Avatar alt={item?.title} src={`${backURL}/` + item?.images?.[0]?.url} /> : <Avatar alt={item?.title} src={noImg} />}
                                 </ListItemAvatar>
                                 <ListItemText
                                     sx={{ mt: '0', mb: '0' }}

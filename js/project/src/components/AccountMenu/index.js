@@ -1,15 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import store from '../../reducers';
+import { Link } from 'react-router-dom';
 import { actionAuthLogout } from '../../actions';
 
 import { Box, Button, Avatar, Menu, MenuItem, ListItemIcon, Divider, IconButton, Typography, Tooltip } from '@mui/material';
 import { Logout, AccountCircle } from '@mui/icons-material';
+import { connect } from 'react-redux';
 import FeedIcon from '@mui/icons-material/Feed';
 
-let state = store.getState()
-
-export default function AccountMenu() {
+function AccountMenu({user}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -32,7 +31,7 @@ export default function AccountMenu() {
             aria-expanded={open ? 'true' : undefined}
           >
               <AccountCircle sx={{ width: 32, height: 32 }} />
-              <Typography>&nbsp;&nbsp;&nbsp;{state.authReducer.payload.sub.login}</Typography>
+              <Typography>&nbsp;&nbsp;&nbsp;{user.sub.login}</Typography>
           </IconButton>
         </Tooltip>
       </Box>
@@ -72,14 +71,14 @@ export default function AccountMenu() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
-        <Link style={{ textDecoration: 'none', color: 'inherit' }} to={`/profile/${state.authReducer.payload.sub.id}`}>
+        <Link style={{ textDecoration: 'none', color: 'inherit' }} to={`/profile/${user.sub.id}`}>
           <MenuItem  sx={{ mb: "0.5rem"}}>
             <Avatar sx={{ bgcolor: '#290302' }}/>
             <Typography>Профиль</Typography>
           </MenuItem>
         </Link> 
         <Divider />
-        <Link style={{ textDecoration: 'none', color: 'inherit' }} to={`/ads/${state.authReducer.payload.sub.id}`}>
+        <Link style={{ textDecoration: 'none', color: 'inherit' }} to={`/ads/${user.sub.id}`}>
           <MenuItem  sx={{ mb: "0.5rem", mt: "0.5rem", pl: '12px' }}>
             <FeedIcon color='action' sx={{ width: 32, height: 32, mr: '8px', color: '#290302' }} />
             <Typography>Мои объявления</Typography>
@@ -102,3 +101,7 @@ export default function AccountMenu() {
     </>
   );
 }
+
+const CAccountMenu = connect(state => ({ user: state.authReducer?.payload || {} }))(AccountMenu)
+
+export default CAccountMenu;

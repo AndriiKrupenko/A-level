@@ -1,10 +1,11 @@
 import { connect } from 'react-redux';
 import { useState } from 'react';
+import { actionSearch } from '../../actions';
+import CSearchResultList from '../SearchResultList';
+
 import { styled, alpha } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import { InputBase } from '@mui/material/';
-import { actionSearch } from '../../actions';
-import CSearchResultList from '../SearchResultList/index.js'
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',

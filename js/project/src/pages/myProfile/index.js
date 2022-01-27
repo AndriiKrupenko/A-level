@@ -1,14 +1,13 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { useEffect } from 'react';
-import CMyDropzone from '../DropeZone';
-
-import { actionAboutMe } from '../../actions';
-
-import noImg from '../../no-img.png';
+import CMyDropzone from '../../components/DropeZone';
+import { actionAboutMe, backURL } from '../../actions';
+import EditIcon from '@mui/icons-material/Edit';
 
 import { Avatar, Box, Container, Typography, Divider, Tooltip } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
+
+import noImg from '../../no-img.png';
 
 const MyProfilePage = ({ aboutMe }) => { 
     useEffect(() => {
@@ -26,7 +25,7 @@ const CMyProfilePage = connect(null, { aboutMe: actionAboutMe })(MyProfilePage)
 const MyProfile = ({ me: { _id, login, nick, avatar, createdAt, phones, addresses } }) => 
   <Container sx={{display: 'flex', pt: '3vh', justifyContent: 'center'}}>
       <Box sx={{ display: 'flex', width: '25%', textAlign: 'center' }}>
-        {avatar && avatar.url ? <Avatar alt="Мой аватар" variant='circular' src={'/' + avatar.url} sx={{width: '30vh', height: '30vh', mr: '-1rem'}}/> : <Avatar alt="Мой аватар" src={noImg} sx={{width: '30vh', height: '30vh', mr: '-1rem'}} />}
+        {avatar && avatar.url ? <Avatar alt="Мой аватар" variant='circular' src={`${backURL}/` + avatar.url} sx={{width: '30vh', height: '30vh', mr: '-1rem'}}/> : <Avatar alt="Мой аватар" src={noImg} sx={{width: '30vh', height: '30vh', mr: '-1rem'}} />}
         <CMyDropzone />
       </Box>
       <Box sx={{ pl: '2rem', width: '35%', textAlign: 'left' }}>

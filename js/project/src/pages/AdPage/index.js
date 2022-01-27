@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { actionAdById, actionAddComment } from '../../actions';
 import { connect } from 'react-redux';
-
-import noImg from '../../no-img.png';
+import { actionAdById, actionAddComment, backURL } from '../../actions';
 
 import { Box, Button, Container, Divider, Typography, TextField } from '@mui/material';
+
+import noImg from '../../no-img.png';
 
 const AdPage = ({ match: { params: { _id } }, getData}) => { 
     useEffect(() => {
@@ -37,11 +37,11 @@ const AdPageCard = ({ ad: { _id, title, images, description, price, createdAt, a
         <Container sx={{ display: 'flex', pt: '3vh', justifyContent: 'center', alignItems: 'flex-start' }}>
             {images && images[0] && images[0].url && <Box sx={{  width: '14%', backgroundColor: '#E9DFC4', border: '3px solid #402217', borderRadius: '10px', textAlign: 'center', pl: '0.5rem', pr: '0.5rem', pt: '0.2rem', pb: '0.8rem', mt: '1rem', mr: '1rem', "&:hover": {cursor: 'pointer'} }}>
                 {images.map(image =>
-                    <img key={image._id} style={{ cursor: 'pointer', maxHeight: '10vh', borderRadius: '10px', boxShadow: '3px 3px 3px #402217', marginTop: '0.8rem' }} src={'/' + image.url} alt='adImg' onClick={() => setMainImg(image.url)} />)}
+                    <img key={image._id} style={{ cursor: 'pointer', maxHeight: '10vh', borderRadius: '10px', boxShadow: '3px 3px 3px #402217', marginTop: '0.8rem' }} src={`${backURL}/` + image.url} alt='adImg' onClick={() => setMainImg(image.url)} />)}
             </Box>}
             <Box sx={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', width: '86%', pt: '1rem', justifyContent: 'center' }}>
                 <Box sx={{ backgroundColor: '#E9DFC4', border: '3px solid #402217', borderRadius: '10px', width: '48%', textAlign: 'center', pt: '1rem', pb: '1rem' }}>
-                    {mainImg ? <img style={{maxWidth: '90%', maxHeight: '35vh', borderRadius: '10px', boxShadow: '3px 3px 3px #402217' }} src={'/' + mainImg} alt='adImg' /> : <img style={{maxWidth: '100%', maxHeight: '35vh', borderRadius: '10px', boxShadow: '3px 3px 3px #402217', color: '#FFF8DC'}} src={noImg} alt='noImg' />}
+                    {mainImg ? <img style={{maxWidth: '90%', maxHeight: '35vh', borderRadius: '10px', boxShadow: '3px 3px 3px #402217' }} src={`${backURL}/` + mainImg} alt='adImg' /> : <img style={{maxWidth: '100%', maxHeight: '35vh', borderRadius: '10px', boxShadow: '3px 3px 3px #402217', color: '#FFF8DC'}} src={noImg} alt='noImg' />}
                 </Box>
                 <Box sx={{ pl: '1rem', width: '49%', textAlign: 'left' }}>
                     <Typography variant='h4' sx={{ pb: '1rem' }}>
@@ -81,7 +81,7 @@ const AdPageCard = ({ ad: { _id, title, images, description, price, createdAt, a
                         <Typography variant='h6' paragraph={true} sx={{ ml: '0', mt: '0.2rem' }}>Комментарии:</Typography>
                         <Box sx={{display: 'flex', flexDirection: 'column-reverse', flexWrap: 'wrap'}}>
                         {comments && comments[0] && comments[0].text && comments.map(comment =>
-                            <Box key={comments.comment._id} sx={{ display: 'flex', flexWrap: 'wrap', width: '100%', mb: '1rem' }}>
+                            <Box key={comment._id} sx={{ display: 'flex', flexWrap: 'wrap', width: '100%', mb: '1rem' }}>
                                 <Box sx={{ width: '18%', overflow: 'hidden' }}>
                                     <Typography variant='body1' paragraph={true}>{comment.owner.login}:</Typography>
                                 </Box>

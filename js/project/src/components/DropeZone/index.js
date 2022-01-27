@@ -1,16 +1,14 @@
 import React, {useCallback} from 'react'
-import { useDropzone } from 'react-dropzone'
-// import { actionUploadFile } from "../../actions"
 import { connect } from 'react-redux';
+import { useDropzone } from 'react-dropzone';
 import { actionSetAvatar } from '../../actions';
-import { Tooltip, Button, TextField, Box, Container, Typography } from '@mui/material/';
+import { Tooltip } from '@mui/material/';
 import EditIcon from '@mui/icons-material/Edit';
 
 
 function MyDropzone({ onLoad }) {
     const onDrop = useCallback(acceptedFiles => {
-        // Do something with the files
-        // console.log(acceptedFiles)
+
         onLoad(acceptedFiles[0])
     }, [])
 

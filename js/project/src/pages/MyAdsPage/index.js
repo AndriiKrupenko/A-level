@@ -1,11 +1,12 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { useEffect } from 'react';
-import { actionMyAds } from '../../actions';
-import noImg from '../../no-img.png';
+import { actionMyAds, backURL } from '../../actions';
 
 import { Grid, Card, CardMedia, CardContent, CardActions, Button, Typography, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+
+import noImg from '../../no-img.png';
 
 const MyAdsPage = ({  _id, myAds }) => { 
     useEffect(() => {
@@ -24,7 +25,7 @@ export const MyAd = ({ _id, owner, images, title, price}) =>
   <Grid item xs={12} md={3}>
     <Card sx={{ height: "100%", borderRadius: 3, boxShadow: '3px 3px 3px #402217' }}>
       <Link to={`/ad/${_id}`}>
-        {images && images[0] && images[0].url ? <CardMedia component="img" sx={{height: 200}} image={'/' + images[0].url} alt='adImg' /> : <CardMedia component="img" sx={{height: 200}} image={noImg} alt='noImg' />}
+        {images && images[0] && images[0].url ? <CardMedia component="img" sx={{height: 200}} image={`${backURL}/` + images[0].url} alt='adImg' /> : <CardMedia component="img" sx={{height: 200}} image={noImg} alt='noImg' />}
       </Link>
       <CardContent sx={{ pt: '0', pb: '0' }}>
         <Typography variant='h6' align='justify' sx={{display: 'flex', width: '100%', justifyContent: 'space-between', mb: '-5px'}} >

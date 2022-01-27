@@ -1,140 +1,89 @@
-.App {
-  // background-color: #e6e6fa;
-  background: linear-gradient(to bottom right, #c5b29a 0%, #b37041 100%);
-  // background: linear-gradient(90deg, #c5b29a, #ac8061, #8b4513);
-  // header {
-  //   background-color: #4b0082;
-  //   height: 10vh;
-  //   display: flex;
-  //   justify-content: space-between;
-  //   align-items: center;
-  //   padding-right: 15px;
-  //   button {
-  //     margin-right: 5px;
-  //   }
-  // }
-  main {
-    padding-top: 10vh;
-    text-align: center;
-    min-height: 80vh;
-    ul {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-start;
+// ----------------------------old_style (before MUI)-------------------------
+// .App {
+// background: linear-gradient(to bottom right, #c5b29a 0%, #b37041 100%);
+// main {
+//   padding-top: 10vh;
+//   text-align: center;
+//   min-height: 80vh;
+//   ul {
+//     display: flex;
+//     flex-wrap: wrap;
+//     justify-content: flex-start;
 
-      width: 90vw;
-      margin: auto;
+//     width: 90vw;
+//     margin: auto;
 
-      padding: 0 15px 0 15px;
-      list-style-type: none;
-      li {
-        background-color: white;
-        width: 180px;
-        height: 280px;
-        margin: 15px;
-        // margin-left: 0;
-        // margin-right: 15px;
-        // margin-bottom: 15px;
-        border: 10px solid white;
-        border-radius: 10px;
-        overflow: hidden;
+//     padding: 0 15px 0 15px;
+//     list-style-type: none;
+//     li {
+//       background-color: white;
+//       width: 180px;
+//       height: 280px;
+//       margin: 15px;
+//       border: 10px solid white;
+//       border-radius: 10px;
+//       overflow: hidden;
 
-        img {
-          width: 180px;
-          height: 150px;
-          border-radius: 8px;
-        }
-        div {
-          padding-left: 3px;
-          padding-right: 3px;
-          overflow: hidden;
-          text-align: center;
-          h3 {
-            text-align: center;
-          }
+//       img {
+//         width: 180px;
+//         height: 150px;
+//         border-radius: 8px;
+//       }
+//       div {
+//         padding-left: 3px;
+//         padding-right: 3px;
+//         overflow: hidden;
+//         text-align: center;
+//         h3 {
+//           text-align: center;
+//         }
 
-          span {
-            padding-left: 5px;
-          }
-        }
-      }
-    }
-    .loginRegistrationForm {
-      width: 20vw;
-      height: auto;
-      border: 2px solid #4b0082;
-      border-radius: 10px;
-      margin: 50px auto;
-      // text-align: left;
-      justify-content: space-around;
-      background-color: white;
-      -webkit-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
-      -moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
-      box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
-    }
-  }
-  footer {
-    display: flex;
-    align-items: center;
-    background-color: #290302;
-  }
-  // text-align: center;
-}
-
-.Logo {
-  max-height: 10vh;
-}
-
-.adPage {
-  justify-content: center;
-  display: flex;
-
-  padding-top: 30px;
-  padding-bottom: 30px;
-
-  div {
-    width: 30vw;
-    text-align: left;
-    margin-left: 15px;
-    overflow: hidden;
-  }
-
-  img {
-    width: 30vw;
-  }
-}
-
-// .App-logo {
-//   height: 40vmin;
-//   pointer-events: none;
-// }
-
-// @media (prefers-reduced-motion: no-preference) {
-//   .App-logo {
-//     animation: App-logo-spin infinite 20s linear;
+//         span {
+//           padding-left: 5px;
+//         }
+//       }
+//     }
+//   }
+//   .loginRegistrationForm {
+//     width: 20vw;
+//     height: auto;
+//     border: 2px solid #4b0082;
+//     border-radius: 10px;
+//     margin: 50px auto;
+//     // text-align: left;
+//     justify-content: space-around;
+//     background-color: white;
+//     -webkit-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+//     -moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+//     box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
 //   }
 // }
-
-// .App-header {
-//   background-color: #282c34;
-//   min-height: 100vh;
+// footer {
 //   display: flex;
-//   flex-direction: column;
 //   align-items: center;
+//   background-color: #290302;
+// }
+//}
+
+// .Logo {
+//   max-height: 10vh;
+// }
+
+// .adPage {
 //   justify-content: center;
-//   font-size: calc(10px + 2vmin);
-//   color: white;
-// }
+//   display: flex;
 
-// .App-link {
-//   color: #61dafb;
-// }
+//   padding-top: 30px;
+//   padding-bottom: 30px;
 
-// @keyframes App-logo-spin {
-//   from {
-//     transform: rotate(0deg);
+//   div {
+//     width: 30vw;
+//     text-align: left;
+//     margin-left: 15px;
+//     overflow: hidden;
 //   }
-//   to {
-//     transform: rotate(360deg);
+
+//   img {
+//     width: 30vw;
 //   }
 // }

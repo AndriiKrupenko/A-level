@@ -1,17 +1,17 @@
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { actionFavoriteRemove } from '../../actions';
-
-import noImg from '../../no-img.png';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import { actionFavoriteRemove, backURL } from '../../actions';
 
 import { Grid, Card, CardMedia, CardContent, CardActions, Button, IconButton, Typography, Tooltip } from '@mui/material';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+
+import noImg from '../../no-img.png';
 
 export const FavoriteAd = ({ _id, owner, images, title, price, onRemove}) =>
   <Grid item xs={12} md={3}>
     <Card sx={{ height: "100%", borderRadius: 3, boxShadow: '3px 3px 3px #402217' }}>
       <Link to={`/ad/${_id}`}>
-        {images && images[0] && images[0].url ? <CardMedia component="img" sx={{height: 200}} image={'/' + images[0].url} alt='adImg' /> : <CardMedia component="img" sx={{height: 200}} image={noImg} alt='noImg' />}
+        {images && images[0] && images[0].url ? <CardMedia component="img" sx={{height: 200}} image={`${backURL}/` + images[0].url} alt='adImg' /> : <CardMedia component="img" sx={{height: 200}} image={noImg} alt='noImg' />}
       </Link>
       <CardContent sx={{ pt: '0', pb: '0' }}>
         <Typography variant='h6'>{title ? title : "unnamed"}</Typography>
