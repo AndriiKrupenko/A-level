@@ -25,7 +25,8 @@ const AdPageCard = ({ ad: { _id, title, images, description, price, createdAt, a
 
     useEffect(() => {
         if (status.status === 'RESOLVED') { 
-            if (status.payload.images && status.payload.images[0].url) {
+            if (status.payload.images && status.payload.images[0] && status.payload.images[0].url) {
+                
                 setMainImg(status.payload.images[0].url)
             } else { 
                 setMainImg('')

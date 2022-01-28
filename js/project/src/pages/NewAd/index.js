@@ -48,7 +48,7 @@ const NewAd = ({ onAdd }) => {
             </Box>}
             <Box sx={{ width: '43%', textAlign: 'center', pt: '0.5rem' }}>
                 <Box sx={{ backgroundColor: '#E9DFC4', border: '3px solid #402217', borderRadius: '10px', pt: '1rem', pb: '1rem' }}>
-                    {img[0] ? <img style={{ maxWidth: '90%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217' }} src={`${backURL}/` + img[0].url} alt='adImg' /> :
+                    {img && img[0] && img[0].url ? <img style={{ maxWidth: '90%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217' }} src={`${backURL}/` + img[0].url} alt='adImg' /> :
                     <img style={{ maxWidth: '90%', maxHeight: '35vh', borderRadius: '10px', border: '5px solid #402217' }} src={noImg} alt='noImg' />}
                 </Box>
                 <CMyDropzoneForAds img={img} setImg={setImg} />
