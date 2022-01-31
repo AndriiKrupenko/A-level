@@ -21,6 +21,7 @@ const LoginForm = ({ onLogin }) => {
           autoComplete="off"
         >
             <Typography variant='h5'>Войдите в аккаунт</Typography>
+            {(login.length >= 4) ? 
             <TextField 
               required
               type="text"
@@ -29,6 +30,17 @@ const LoginForm = ({ onLogin }) => {
               value={login}
               onChange={e => setLogin(e.target.value)} 
             />
+            : 
+            <TextField 
+              error
+              type="text"
+              id="login"
+              label="Логин"
+              value={login}
+              helperText="Мин. длина 4 символа"
+              onChange={e => setLogin(e.target.value)}
+            />}
+            {(password.length >= 4) ?
             <TextField
               required 
               id="pass"
@@ -37,7 +49,17 @@ const LoginForm = ({ onLogin }) => {
               value={password}
               onChange={e => setPassword(e.target.value)} 
             />
-              <Button sx={{ mt: '1rem', mr: '0.5rem', color: '#fff', bgcolor: 'primary', "&:hover": {bgcolor: 'secondary', color: '#fff'} }} variant='contained' disabled={!(login && password)} onClick={() => {onLogin(login, password)}}>Войти</Button>&nbsp;
+            : 
+            <TextField 
+              error
+              type="password"
+              id="pass"
+              label="Пароль"
+              value={password}
+              helperText="Мин. длина 4 символа"
+              onChange={e => setPassword(e.target.value)}
+            />}
+              <Button sx={{ mt: '1rem', mr: '0.5rem', color: '#fff', bgcolor: 'primary', "&:hover": {bgcolor: 'secondary', color: '#fff'} }} variant='contained' disabled={!((login.length >= 4) && (password.length >= 4))} onClick={() => {onLogin(login, password)}}>Войти</Button>&nbsp;
               <Link style={{ textDecoration: 'none', color: 'inherit' }} to="/registration" >
                 <Button sx={{ mt: '1rem', color: '#fff', bgcolor: 'primary', "&:hover": {bgcolor: 'secondary', color: '#fff'} }} variant='contained'>Регистрация &gt;&gt;</Button>
               </Link>
